@@ -107,6 +107,14 @@ ENDC
 	ld c, O_BEARD * OBJ_SIZE + OAMA_Y
 	ld [bc], a
 
+.ears
+	ld a, [hli]
+	ld c, O_EAR_LEFT * OBJ_SIZE + OAMA_X
+	ld [bc], a
+	ld a, [hli]
+	ld c, O_EAR_RIGHT * OBJ_SIZE + OAMA_X
+	ld [bc], a
+
 .scales
 	ld c, l
 	ld b, h
@@ -154,7 +162,7 @@ ENDC
 .loopDone
 	pop de
 	inc e
-	jr .loop
+	jp .loop
 
 
 SECTION "UpdateSoulPlate", ROM0

@@ -49,6 +49,12 @@ ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
 	ld b, T_BEARD
 	ld d, Y_BEARD
 	call SetObject
+	ld b, T_EAR_LEFT
+	ld de, Y_EAR_LEFT << 8 | X_EAR_LEFT
+	call SetObject
+	ld b, T_EAR_RIGHT
+	ld de, Y_EAR_RIGHT << 8 | X_EAR_RIGHT
+	call SetObject
 
 .soul
 	ld bc, T_SOUL << 8
@@ -263,6 +269,8 @@ Obj16Tiles:
 	INCBIN "judge_soul.1bpp"
 	INCBIN "judge_feather.1bpp"
 	INCBIN "judge_beard.1bpp"
+	INCBIN "judge_ear_left.1bpp"
+	INCBIN "judge_ear_right.1bpp"
 .end
 
 Back2Tiles:
