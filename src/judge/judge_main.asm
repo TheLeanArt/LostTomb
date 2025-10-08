@@ -122,12 +122,7 @@ ENDC
 .left
 	ld d, H_CHAIN_LEFT
 	call UpdateChain
-IF FLIP_SOUL
 	call UpdateSoulPlate
-ELSE
-	ld d, W_PLATE
-	call UpdateRow
-ENDC
 
 	call hFixedOAMDMA
 
@@ -154,8 +149,6 @@ ENDC
 	inc e
 	jr .loop
 
-
-IF FLIP_SOUL
 
 SECTION "UpdateSoulPlate", ROM0
 UpdateSoulPlate:
@@ -202,8 +195,6 @@ UpdateSoulPlate:
 	ld l, O_CHAIN_RIGHT * OBJ_SIZE
 	ret
 
-ENDC
-
 
 SECTION "SetPawAndFin", ROM0
 SetPawAndFin:
@@ -231,7 +222,7 @@ CopyFour:
 	jr .loop
 
 
-SECTION "UpdateSingle", ROM0
+SECTION "UpdateFeather", ROM0
 UpdateFeather:
 	ld a, [bc]
 	inc c
@@ -247,16 +238,11 @@ UpdateSingle:
 	ld a, [bc]
 	inc c
 	ld [hli], a
-IF FLIP_FEATHER
-	ld a, e
-	rrca
-	and OAM_XFLIP
-	ld [hli], a
-ELSE
 	inc l
-ENDC
 	ret
 
+
+SECTION "UpdateSoul", ROM0
 UpdateSoul:
 	call UpdatePair
 	ld a, d
@@ -267,50 +253,32 @@ UpdatePair:
 	ld d, a
 	ld [hli], a
 	
-IF FLIP_SOUL
 	push de
 	ld a, e
 	and OAM_XFLIP << 2
 	swap a
 	ld e, a
-	add X_SOUL
-	ld [hli], a
-ELSE
-	inc l
-ENDC
-
 	call UpdateHalf
 
 	ld [hl], d
 	inc l
-IF FLIP_SOUL
 	ld a, e
 	xor TILE_WIDTH
-	add X_SOUL
-	ld [hli], a
-ELSE
-	inc l
-ENDC
-
 	call UpdateHalf
 
-IF FLIP_SOUL
 	pop de
-ENDC
 	ret
 
 UpdateHalf:
+	add X_SOUL
+	ld [hli], a
 	ld a, [bc]
 	inc c
 	ld [hli], a
-IF FLIP_SOUL
 	ld a, e
 	rlca
 	rlca
 	ld [hli], a
-ELSE
-	inc l
-ENDC
 	ret
 
 
