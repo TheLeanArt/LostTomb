@@ -1,4 +1,4 @@
-# Judgment Comes
+# Judgment Cometh
 
 Game Boy animation created by subpixel for GB Pixel Art Jam 2025 (1-bit edition).
 
