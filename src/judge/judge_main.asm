@@ -43,6 +43,7 @@ ENDC
 
 	ld e, 0
 .loop
+	push de
 	rst WaitVBlank
 
 	ld a, e
@@ -102,7 +103,6 @@ ENDC
 	ld [bc], a
 
 .scales
-	ld a, [hli]
 	ld c, l
 	ld b, h
 	ld hl, wShadowOAM + O_SOUL * OBJ_SIZE + OAMA_Y
@@ -141,11 +141,10 @@ ENDC
 	jr .loopDone
 
 .doSound
-	push de
 	call hUGE_dosound
-	pop de
 
 .loopDone
+	pop de
 	inc e
 	jr .loop
 
@@ -157,11 +156,10 @@ UpdateSoulPlate:
 	ld [hl], a                 ; Set Y
 	ld d, a                    ; Store the Y value in D
 
-	ld a, e                    ; Load the step counter
-	rrca                       ; Divide by 2
-	rrca                       ; Divide by 2
-	and OAM_XFLIP              ; Isolate the mirror flag
-	ld b, a                    ; BC is no longer needed; store the attributes in B
+	ld a, e                    ; Load the flip indicator
+	add a                      ; Multiply by 4
+	add a                      ; ...
+	ld e, a                    ; Store the attributes in E (indicator no longer needed)
 
 .1
 	ld l, (O_PLATE_LEFT + 1) * OBJ_SIZE
@@ -171,22 +169,21 @@ UpdateSoulPlate:
 	swap a                     ; 0 or 8
 	add T_PLATE_LEFT1          ; Calculate left tile ID
 	ld [hli], a                ; Set tile ID and advance to attributes
-	ld c, a                    ; BC is no longer needed; store the 
-	ld a, b                    ; Load attributes
-	ld [hli], a                ; Set attributes and advance to the next object's Y
+	ld [hl], e                 ; Set attributes
+	inc l                      ; Advance to the next object's Y
 
 .2
 	ld [hl], d                 ; Set Y
 	ld l, (O_PLATE_LEFT + 2) * OBJ_SIZE + OAMA_FLAGS
-	ld [hli], a                ; Set attributes and advance to the next object's Y
+	ld [hl], e                 ; Set attributes
+	inc l                      ; Advance to the next object's Y
 
 .3
 	ld [hl], d                 ; Set Y
 	ld l, (O_PLATE_LEFT + 3) * OBJ_SIZE + OAMA_TILEID
-	ld a, c                    ; Load tile ID
 	xor T_PLATE ^ T_PLATE_LEFT1; Flip 2nd left and 2nd right
 	ld [hli], a                ; Set tile ID and advance to attributes
-	ld [hl], b                 ; Set attributes
+	ld [hl], e                 ; Set attributes
 	inc l                      ; Advance to the next object's Y
 
 .4
@@ -244,41 +241,40 @@ UpdateSingle:
 
 SECTION "UpdateSoul", ROM0
 UpdateSoul:
-	call UpdatePair
-	ld a, d
-	add TILE_HEIGHT
+	ld a, e                    ; Load the step counter
+	and OAM_XFLIP << 2         ; Isolate bit 7
+	swap a                     ; Move to bit 3
+	ld e, a                    ; Store the flip indicator in E
+
+	ld a, [bc]                 ; Load Y
+	inc c                      ; Advance the source address
+	call UpdatePair            ; Update the upper tile pair
+	ld a, d                    ; Store Y in D
+	add TILE_HEIGHT            ; Add tile height
 	; Fall through
 
 UpdatePair:
-	ld d, a
-	ld [hli], a
-	
-	push de
-	ld a, e
-	and OAM_XFLIP << 2
-	swap a
-	ld e, a
-	call UpdateHalf
+	ld d, a                    ; Load Y
+	ld [hli], a                ; Set Y and advance to X
+	ld a, e                    ; Load the flip indicator
+	call UpdateHalf            ; Update the left tile
 
-	ld [hl], d
-	inc l
-	ld a, e
-	xor TILE_WIDTH
-	call UpdateHalf
-
-	pop de
-	ret
+	ld a, d                    ; Load Y
+	ld [hli], a                ; Set Y and advance to X
+	ld a, e                    ; Load the flip indicator
+	xor TILE_WIDTH             ; Flip the flip indicator
+	; Fall through
 
 UpdateHalf:
-	add X_SOUL
-	ld [hli], a
-	ld a, [bc]
-	inc c
-	ld [hli], a
-	ld a, e
-	rlca
-	rlca
-	ld [hli], a
+	add X_SOUL                 ; Add base X
+	ld [hli], a                ; Set X and advance to tile ID
+	ld a, [bc]                 ; Load tile ID
+	inc c                      ; Advance source address
+	ld [hli], a                ; Set tile ID and advance to attributes
+	ld a, e                    ; Load the flip indicator
+	add a                      ; Multiply by 4
+	add a                      ; ...
+	ld [hli], a                ; Set tile ID
 	ret
 
 
