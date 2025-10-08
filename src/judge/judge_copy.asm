@@ -58,6 +58,19 @@ Judge::
 	ld d, Y_FEATHER_0 + TILE_HEIGHT
 	call SetObject
 
+.left
+	ld a, H_CHAIN_LEFT - 1
+	ld de, Y_CHAIN_LEFT_0 << 8 | X_CHAIN_LEFT
+	call InitChain
+	inc b
+	call InitString
+
+	call SetNextObject
+	call SetNextObject
+	call SetNextObject
+	ld bc, T_PLATE_SIDE << 8 | OAM_XFLIP
+	call SetAdjObject
+
 .right
 	ld a, H_CHAIN_RIGHT - 1
 	ld de, Y_CHAIN_RIGHT_0 << 8 | X_CHAIN_RIGHT
@@ -69,19 +82,6 @@ Judge::
 	call SetAdjObject
 	call SetAdjObject
 	call SetAdjObject
-	ld bc, T_PLATE_SIDE << 8 | OAM_XFLIP
-	call SetAdjObject
-
-.left
-	ld a, H_CHAIN_LEFT - 1
-	ld de, Y_CHAIN_LEFT_0 << 8 | X_CHAIN_LEFT
-	call InitChain
-	inc b
-	call InitString
-
-	call SetNextObject
-	call SetNextObject
-	call SetNextObject
 	ld bc, T_PLATE_SIDE << 8 | OAM_XFLIP
 	call SetAdjObject
 	; TODO Fall through

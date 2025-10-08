@@ -113,16 +113,16 @@ ENDC
 .feather
 	call UpdateFeather
 
+.left
+	ld d, H_CHAIN_LEFT
+	call UpdateChain
+	call UpdateSoulPlate
+
 .right
 	ld d, H_CHAIN_RIGHT
 	call UpdateChain
 	ld d, W_PLATE
 	call UpdateRow
-
-.left
-	ld d, H_CHAIN_LEFT
-	call UpdateChain
-	call UpdateSoulPlate
 
 	call hFixedOAMDMA
 

@@ -31,8 +31,8 @@ FOR I, 8
 	INCBIN "judge_soul.tilemap", I * H_SOUL * W_SOUL, H_SOUL * W_SOUL
 
 	db Y_FEATHER_{d:I}
-	INCBIN "judge_feather.tilemap", I * W_FEATHER, W_FEATHER
+	INCBIN "judge_feather.tilemap", I * H_FEATHER, H_FEATHER
 
-	db Y_CHAIN_RIGHT_{d:I}
 	db Y_CHAIN_LEFT_{d:I}
+	db Y_CHAIN_RIGHT_{d:I}
 ENDR
