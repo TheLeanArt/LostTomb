@@ -17,13 +17,17 @@ RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge \
 	-D _EYE=$(T_EYE) \
 	-D _NOSE=$(T_NOSE) \
 	-D _MOUTH=$(T_MOUTH) \
+	-D _TOP_LEFT=$(T_TOP_LEFT) \
+	-D _TOP_RIGHT=$(T_TOP_RIGHT) \
 
-T_SOUL    = 01
-T_FEATHER = 1C
-T_CHAIN   = 20
-T_EYE     = 28
-T_NOSE    = 2C
-T_MOUTH   = 2E
+T_SOUL      = 01
+T_FEATHER   = 1C
+T_CHAIN     = 20
+T_EYE       = 28
+T_NOSE      = 2C
+T_MOUTH     = 2E
+T_TOP_LEFT  = AE
+T_TOP_RIGHT = B0
 
 OBJS = \
 	src/main.o \
