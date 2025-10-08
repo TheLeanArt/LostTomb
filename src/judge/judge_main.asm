@@ -19,7 +19,7 @@ JudgeMain:
 	ld a, X_WINDOW_INIT
 	ldh [rWX], a
 
-	ld a, LCDC_ON | LCDC_BG_ON | LCDC_OBJ_ON | LCDC_WIN_ON | LCDC_WIN_9C00
+	ld a, LCDC_ON | LCDC_BG_ON | LCDC_OBJ_ON | LCDC_OBJ_16 | LCDC_WIN_ON | LCDC_WIN_9C00
 	ldh [rLCDC], a
 
 	ld a, IE_VBLANK
@@ -111,7 +111,14 @@ ENDC
 	call UpdateSoul
 
 .feather
-	call UpdateFeather
+	ld a, [bc]
+	inc c
+	ld [hli], a
+	inc l
+	ld a, [bc]
+	inc c
+	ld [hli], a
+	inc l
 
 .left
 	call UpdateSoulChain
@@ -149,7 +156,7 @@ SECTION "UpdateSoulPlate", ROM0
 UpdateSoulPlate:
 	add TILE_HEIGHT            ; Advance to the next row
 .0
-	ld [hl], a                 ; Set Y
+	ld [hli], a                ; Set Y and advance to X
 	ld d, a                    ; Store the Y value in D
 
 	ld a, e                    ; Load the flip indicator
@@ -157,35 +164,27 @@ UpdateSoulPlate:
 	add a                      ; ...
 	ld e, a                    ; Store the attributes in E (indicator no longer needed)
 
-.1
-	ld l, (O_PLATE_LEFT + 1) * OBJ_SIZE
-	ld [hl], d                 ; Set Y
-	inc l                      ; Advance to X
 	inc l                      ; Advance to tile ID
 	swap a                     ; 0 or 8
+	add a                      ; Multiply by 2
 	add T_PLATE_LEFT1          ; Calculate left tile ID
 	ld [hli], a                ; Set tile ID and advance to attributes
 	ld [hl], e                 ; Set attributes
 	inc l                      ; Advance to the next object's Y
 
-.2
+.1
 	ld [hl], d                 ; Set Y
-	ld l, (O_PLATE_LEFT + 2) * OBJ_SIZE + OAMA_FLAGS
+	ld l, (O_PLATE_LEFT + 1) * OBJ_SIZE + OAMA_FLAGS
 	ld [hl], e                 ; Set attributes
 	inc l                      ; Advance to the next object's Y
 
-.3
+.2
 	ld [hl], d                 ; Set Y
-	ld l, (O_PLATE_LEFT + 3) * OBJ_SIZE + OAMA_TILEID
+	ld l, (O_PLATE_LEFT + 2) * OBJ_SIZE + OAMA_TILEID
 	xor T_PLATE ^ T_PLATE_LEFT1; Flip 2nd left and 2nd right
 	ld [hli], a                ; Set tile ID and advance to attributes
 	ld [hl], e                 ; Set attributes
 	inc l                      ; Advance to the next object's Y
-
-.4
-	ld [hl], d                 ; Set Y
-
-	ld l, O_CHAIN_RIGHT2 * OBJ_SIZE
 	ret
 
 
@@ -215,53 +214,28 @@ CopyFour:
 	jr .loop
 
 
-SECTION "UpdateFeather", ROM0
-UpdateFeather:
-	ld a, [bc]
-	inc c
-	ld d, a
-	call UpdateSingle
-	ld a, d
-	add TILE_HEIGHT
-	; Fall through
-
-UpdateSingle:
-	ld [hli], a
-	inc l
-	ld a, [bc]
-	inc c
-	ld [hli], a
-	inc l
-	ret
-
-
 SECTION "UpdateSoul", ROM0
 UpdateSoul:
+	ld a, [bc]                 ; Load Y
+	inc c                      ; Advance the source address
+
+.light
+	ld [hli], a                ; Set Y and advance to X
+	ld d, a                    ; Store Y in D
 	ld a, e                    ; Load the step counter
 	and OAM_XFLIP << 2         ; Isolate bit 7
 	swap a                     ; Move to bit 3
 	ld e, a                    ; Store the flip indicator in E
+	call .rest                 ; Update the rest of the left object
 
-	ld a, [bc]                 ; Load Y
-	inc c                      ; Advance the source address
-	call UpdatePair            ; Update the upper tile pair
-	ld a, d                    ; Store Y in D
-	add TILE_HEIGHT            ; Add tile height
-	; Fall through
-
-UpdatePair:
-	ld d, a                    ; Load Y
-	ld [hli], a                ; Set Y and advance to X
-	ld a, e                    ; Load the flip indicator
-	call UpdateHalf            ; Update the left tile
-
+.right
 	ld a, d                    ; Load Y
 	ld [hli], a                ; Set Y and advance to X
 	ld a, e                    ; Load the flip indicator
 	xor TILE_WIDTH             ; Flip the flip indicator
 	; Fall through
 
-UpdateHalf:
+.rest
 	add X_SOUL                 ; Add base X
 	ld [hli], a                ; Set X and advance to tile ID
 	ld a, [bc]                 ; Load tile ID
@@ -270,7 +244,7 @@ UpdateHalf:
 	ld a, e                    ; Load the flip indicator
 	add a                      ; Multiply by 4
 	add a                      ; ...
-	ld [hli], a                ; Set tile ID
+	ld [hli], a                ; Set attributes and advance to the next object
 	ret
 
 
@@ -284,6 +258,7 @@ UpdateFeatherChainAndPlate:
 	call UpdateChain.loop
 	call UpdateSoulChain.cont
 	ld d, W_PLATE
+	sub TILE_HEIGHT
 	jr UpdateRow
 
 UpdateSoulChain:
@@ -291,12 +266,13 @@ UpdateSoulChain:
 	call UpdateChain
 .cont
 	ld d, 2
+	sub TILE_HEIGHT
 	call UpdateRow.loop
 	ld d, 2
 	; Fall through
 
 UpdateRow:
-	add TILE_HEIGHT
+	add TILE_HEIGHT * 2
 .loop
 	ld [hli], a
 REPT OBJ_SIZE - 1
@@ -314,7 +290,7 @@ UpdateChain:
 REPT OBJ_SIZE - 1
 	inc l
 ENDR
-	add TILE_HEIGHT
+	add TILE_HEIGHT * 2
 	dec d
 	jr nz, .loop
 	ret

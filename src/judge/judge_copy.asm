@@ -13,8 +13,12 @@ Judge::
 	ldh [rBGP], a              ; Mask out the tile update
 
 	ld hl, STARTOF(VRAM)
-	ld de, ObjTiles
-	ld bc, ObjTiles.end - ObjTiles
+	ld de, Obj8Tiles
+	ld b, (Obj8Tiles.end - Obj8Tiles) >> 3
+ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
+	call Copy1bppHalfSafe
+
+	ld bc, Obj16Tiles.end - Obj16Tiles
 	call Copy1bppLongSafe
 
 	ld hl, STARTOF(VRAM) | $0800
@@ -48,41 +52,30 @@ Judge::
 	ld de, Y_SOUL_0 << 8 | X_SOUL
 	call SetObject
 	call SetNextObject
-	inc b
-	ld de, (Y_SOUL_0 + TILE_HEIGHT) << 8 | X_SOUL
-	call SetObject
-	call SetNextObject
 
 .feather
 	ld b, T_FEATHER
 	ld de, Y_FEATHER_0 << 8 | X_FEATHER
-	call SetObject
-	inc b
-	ld d, Y_FEATHER_0 + TILE_HEIGHT
 	call SetObject
 
 .left
 	ld a, H_CHAIN_LEFT - 1
 	ld de, Y_CHAIN_LEFT_0 << 8 | X_CHAIN_LEFT
 	call InitChain
-	inc b
+	ld b, T_STRING2
 	call InitString
 
 	call SetNextObject
 	call SetNextObject
 	call SetNextObject
-	ld bc, T_PLATE_SIDE << 8 | OAM_XFLIP
-	call SetAdjObject
 
 .right
 	ld bc, T_CHAIN << 8 | OAM_PRIO | OAM_YFLIP
 	ld de, Y_CHAIN_RIGHT_0 << 8 | X_CHAIN_RIGHT
 	call SetObject
-	ld d, Y_CHAIN_RIGHT_0 + TILE_HEIGHT
-	call SetObject
 
 	ld a, H_CHAIN_RIGHT - 1
-	ld de, (Y_CHAIN_RIGHT_0 + TILE_HEIGHT + DX_CHAIN_RIGHT) << 8 | X_CHAIN_RIGHT
+	ld de, (Y_CHAIN_RIGHT_0 + TILE_HEIGHT * 2 + DX_CHAIN_RIGHT) << 8 | X_CHAIN_RIGHT
 	call InitChain
 	ld b, T_STRING
 	call InitString
@@ -91,9 +84,6 @@ Judge::
 	call SetAdjObject
 	call SetAdjObject
 	call SetAdjObject
-	ld bc, T_PLATE_SIDE << 8 | OAM_XFLIP
-	call SetAdjObject
-	; TODO Fall through
 
 	call ClearOAM
 
@@ -109,6 +99,29 @@ Copy1bppLongSafe:
 	ld a, b                    ; Load the value in B into A
 	or c                       ; Logical OR the value in A (from B) with C
 	jr nz, Copy1bppLongSafe    ; If B and C are both zero, OR B will be zero, otherwise keep looping
+	ret
+
+
+SECTION "Copy1bppHalfSafe", ROM0
+Copy1bppHalfSafe:
+	ld c, TILE_HEIGHT          ; Set the loop pointer to half tile size
+.copyLoop
+	rst WaitVRAM               ; Wait for VRAM to become accessible
+	ld a, [de]                 ; Load a byte from the address DE points to into the A register
+	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
+	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
+	inc e                      ; Increment the source pointer in E
+	dec c                      ; Decrement the inner loop counter in C
+	jr nz, .copyLoop           ; If C is not zero, continue to loop
+	ld c, 8
+.clearLoop
+	rst WaitVRAM
+	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
+	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
+	dec c                      ; Decrement the inner loop counter in C
+	jr nz, .clearLoop          ; If C is not zero, continue to loop
+	dec b                      ; Decrement the outer loop counter in B
+	jr nz, Copy1bppHalfSafe    ; If B is not zero, continue to loop
 	ret
 
 
@@ -160,7 +173,7 @@ InitChain:
 	push af
 	call SetObject
 	ld a, d
-	add TILE_HEIGHT
+	add TILE_HEIGHT * 2
 	ld d, a
 	pop af
 	dec a
@@ -180,27 +193,33 @@ InitString:
 	ld e, a
 	call SetObject
 
-	ld b, T_STRING
+	ld b, T_PLATE_SIDE
 	ld a, e
 	add TILE_WIDTH
 	ld e, a
-	call .nextRow
+	ld a, TILE_HEIGHT * 2
+	call .next
 
 	ld a, e
 	sub TILE_WIDTH * 4
 	ld e, a
 	ld c, 0
 	call SetObject
-	inc b
-	; Fall through
-
-.nextRow
 	ld a, d
 	add TILE_HEIGHT
+	ld d, a
+	ret
+
+.nextRow
+	ld a, TILE_HEIGHT
+
+.next
+	add d
 	ld d, a
 	jr SetObject
 
 SetNextObject:
+	inc b                      ; Advance the tile ID
 	inc b                      ; Advance the tile ID
 	; Fall through
 
@@ -229,14 +248,17 @@ SetObject:
 	ret
 
 
-SECTION "Judgment Tile Data", ROMX
-ObjTiles:
-	INCBIN "judge_soul.1bpp"
-	INCBIN "judge_feather.1bpp"
-	INCBIN "judge_scales.1bpp"
+SECTION "Judgment Tile Data", ROMX, ALIGN[8]
+Obj8Tiles:
 	INCBIN "judge_eye.1bpp"
 	INCBIN "judge_nose.1bpp"
 	INCBIN "judge_mouth.1bpp"
+.end
+
+Obj16Tiles:
+	INCBIN "judge_scales.1bpp"
+	INCBIN "judge_soul.1bpp"
+	INCBIN "judge_feather.1bpp"
 .end
 
 Back2Tiles:

@@ -20,12 +20,13 @@ RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge \
 	-D _TOP_LEFT=$(T_TOP_LEFT) \
 	-D _TOP_RIGHT=$(T_TOP_RIGHT) \
 
-T_SOUL      = 01
-T_FEATHER   = 1C
-T_CHAIN     = 20
-T_EYE       = 28
-T_NOSE      = 2C
-T_MOUTH     = 2E
+T_EYE       = 00
+T_NOSE      = 08
+T_MOUTH     = 0C
+T_CHAIN     = 10
+T_SOUL      = 20
+T_FEATHER   = 40
+
 T_TOP_LEFT  = AE
 T_TOP_RIGHT = B0
 
@@ -109,22 +110,22 @@ src/%.o: src/%.asm $(INC)
 	$(RGBASM) $(RGBASMFLAGS) $< -o $@
 
 art/judge/judge_scales.1bpp: art/judge/judge_scales.png
-	$(RGBGFX) -um -d1 $< -o $@
+	$(RGBGFX) -Z -d1 $< -o $@
 
-art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png art/judge/blank.1bpp
-	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/blank.1bpp
+art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png
+	$(RGBGFX) -Z -d1 -T -b 0x$(T_SOUL) $< -o $@
 
 art/judge/judge_feather.1bpp art/judge/judge_feather.tilemap: art/judge/judge_feather.png
-	$(RGBGFX) -u -d1 -T -b 0x$(T_FEATHER) $< -o $@
+	$(RGBGFX) -uZ -d1 -T -b 0x$(T_FEATHER) $< -o $@
 
 art/judge/judge_eye.1bpp art/judge/judge_eye.tilemap: art/judge/judge_eye.png
-	$(RGBGFX) -u -d1 -T -b 0x$(T_EYE) $< -o $@
+	$(RGBGFX) -u -d1 -T $< -o $@
 
 art/judge/judge_nose.1bpp art/judge/judge_nose.tilemap: art/judge/judge_nose.png
-	$(RGBGFX) -u -d1 -T -b 0x$(T_NOSE) $< -o $@
+	$(RGBGFX) -u -d1 -T $< -o $@
 
 art/judge/judge_mouth.1bpp art/judge/judge_mouth.tilemap: art/judge/judge_mouth.png
-	$(RGBGFX) -u -d1 -T -b 0x$(T_MOUTH) $< -o $@
+	$(RGBGFX) -u -d1 -T $< -o $@
 
 art/judge/judge_status.1bpp art/judge/judge_status.tilemap: art/judge/judge_status.png art/judge/blank.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/blank.1bpp
