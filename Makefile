@@ -58,7 +58,8 @@ JUDGE_1BPP = \
 	art/judge/judge_back.1bpp \
 
 JUDGE_2BPP = \
-	art/judge/judge_top.2bpp \
+	art/judge/judge_top_left.2bpp \
+	art/judge/judge_top_right.2bpp \
 
 JUDGE_MAIN_MAPS = \
 	art/judge/judge_status.tilemap \
@@ -76,10 +77,13 @@ JUDGE_MAIN_MAPS = \
 JUDGE_MAPS = \
 	art/judge/judge_back.tilemap \
 
+JUDGE_PALS = \
+	art/judge/judge_top.pal \
+
 all: $(TARGET)
 
 clean:
-	rm -f $(TARGET) $(SYM) $(OBJS) $(JUDGE_1BPP) $(JUDGE_2BPP) $(JUDGE_MAPS) $(JUDGE_MAIN_MAPS)
+	rm -f $(TARGET) $(SYM) $(OBJS) $(JUDGE_1BPP) $(JUDGE_2BPP) $(JUDGE_MAPS) $(JUDGE_MAIN_MAPS) $(JUDGE_PALS)
 
 $(TARGET): $(OBJS)
 	$(RGBLINK) $(RGBLINKFLAGS) $^ -o $@
@@ -138,6 +142,12 @@ art/judge/judge_fin.1bpp art/judge/judge_fin.tilemap: art/judge/judge_fin.png ar
 
 art/judge/judge_back.1bpp art/judge/judge_back.tilemap: art/judge/judge_back.png art/judge/judge_fin.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_fin.1bpp
+
+art/judge/judge_top_left.2bpp art/judge/judge_top.pal: art/judge/judge_top_left.png
+	$(RGBGFX) -d2 $< -o $@ -p art/judge/judge_top.pal
+
+art/judge/judge_top_right.2bpp: art/judge/judge_top_right.png art/judge/judge_top.pal
+	$(RGBGFX) -d2 $< -o $@ -c gbc:art/judge/judge_top.pal
 
 art/%.1bpp: art/%.png
 	$(RGBGFX) -d1 $< -o $@

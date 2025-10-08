@@ -421,6 +421,7 @@ FodyWeavers.xsd
 *.1bpp
 *.2bpp
 *.tilemap
+*.pal
 *.o
 *.map
 *.sym

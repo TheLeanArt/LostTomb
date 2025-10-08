@@ -244,7 +244,8 @@ Back2Tiles:
 .end
 
 BackTiles:
-	INCBIN "judge_top.2bpp"
+	INCBIN "judge_top_left.2bpp"
+	INCBIN "judge_top_right.2bpp"
 .end
 
 Back1Tiles:
