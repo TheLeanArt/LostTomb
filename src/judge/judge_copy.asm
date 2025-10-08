@@ -21,6 +21,7 @@ Judge::
 	ld bc, Back2Tiles.end - Back2Tiles
 	call Copy1bppLongSafe
 
+	ld b, BackTiles.end - BackTiles
 	call Copy2bppSafe
 
 	ld hl, STARTOF(VRAM) | $1000
@@ -74,8 +75,14 @@ Judge::
 	call SetAdjObject
 
 .right
-	ld a, H_CHAIN_RIGHT - 1
+	ld bc, T_CHAIN << 8 | OAM_PRIO | OAM_YFLIP
 	ld de, Y_CHAIN_RIGHT_0 << 8 | X_CHAIN_RIGHT
+	call SetObject
+	ld d, Y_CHAIN_RIGHT_0 + TILE_HEIGHT
+	call SetObject
+
+	ld a, H_CHAIN_RIGHT - 1
+	ld de, (Y_CHAIN_RIGHT_0 + TILE_HEIGHT + DX_CHAIN_RIGHT) << 8 | X_CHAIN_RIGHT
 	call InitChain
 	ld b, T_STRING
 	call InitString
@@ -107,7 +114,6 @@ Copy1bppLongSafe:
 
 SECTION "Copy2bppSafe", ROM0
 Copy2bppSafe:
-	ld b, TILE_SIZE
 .loop
 	rst WaitVRAM               ; Wait for VRAM to become accessible
 	ld a, [de]                 ; Load a byte from the address DE points to into the A register
@@ -246,9 +252,13 @@ Back1Tiles:
 .end
 
 BackMap:
-	INCBIN "judge_back.tilemap", 0, ROW_TOP_LEFT * SCREEN_WIDTH + COL_TOP_LEFT
-	db T_TOP_LEFT
-	INCBIN "judge_back.tilemap", ROW_TOP_LEFT * SCREEN_WIDTH + COL_TOP_LEFT + 1
+	INCBIN "judge_back.tilemap", 0, ROW_TOP_RIGHT * SCREEN_WIDTH + COL_TOP_RIGHT
+	db T_TOP_RIGHT
+	INCBIN "judge_back.tilemap", ROW_TOP_RIGHT * SCREEN_WIDTH + COL_TOP_RIGHT + 1, ROW_TOP_LEFT * SCREEN_WIDTH + COL_TOP_LEFT - (ROW_TOP_RIGHT * SCREEN_WIDTH + COL_TOP_RIGHT + 1)
+	db T_TOP_LEFT1
+	INCBIN "judge_back.tilemap", ROW_TOP_LEFT * SCREEN_WIDTH + COL_TOP_LEFT + 1, SCREEN_WIDTH - 1
+	db T_TOP_LEFT2
+	INCBIN "judge_back.tilemap", (ROW_TOP_LEFT + 1) * SCREEN_WIDTH + COL_TOP_LEFT + 1
 .end
 
 StatusMap:

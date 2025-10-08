@@ -114,15 +114,11 @@ ENDC
 	call UpdateFeather
 
 .left
-	ld d, H_CHAIN_LEFT
-	call UpdateChain
+	call UpdateSoulChain
 	call UpdateSoulPlate
 
 .right
-	ld d, H_CHAIN_RIGHT
-	call UpdateChain
-	ld d, W_PLATE
-	call UpdateRow
+	call UpdateFeatherChainAndPlate
 
 	call hFixedOAMDMA
 
@@ -189,7 +185,7 @@ UpdateSoulPlate:
 .4
 	ld [hl], d                 ; Set Y
 
-	ld l, O_CHAIN_RIGHT * OBJ_SIZE
+	ld l, O_CHAIN_RIGHT2 * OBJ_SIZE
 	ret
 
 
@@ -278,18 +274,22 @@ UpdateHalf:
 	ret
 
 
-SECTION "UpdateRow", ROM0
-UpdateChain:
-	ld a, [bc]
-	inc c
-.loop
-	ld [hli], a
-REPT OBJ_SIZE - 1
-	inc l
-ENDR
-	add TILE_HEIGHT
-	dec d
-	jr nz, .loop
+SECTION "UpdateChain", ROM0
+UpdateFeatherChainAndPlate:
+	ld d, H_CHAIN_RIGHT2
+	call UpdateChain
+	inc a
+	inc a
+	ld d, H_CHAIN_RIGHT
+	call UpdateChain.loop
+	call UpdateSoulChain.cont
+	ld d, W_PLATE
+	jr UpdateRow
+
+UpdateSoulChain:
+	ld d, H_CHAIN_LEFT
+	call UpdateChain
+.cont
 	ld d, 2
 	call UpdateRow.loop
 	ld d, 2
@@ -302,6 +302,19 @@ UpdateRow:
 REPT OBJ_SIZE - 1
 	inc l
 ENDR
+	dec d
+	jr nz, .loop
+	ret
+
+UpdateChain:
+	ld a, [bc]
+	inc c
+.loop
+	ld [hli], a
+REPT OBJ_SIZE - 1
+	inc l
+ENDR
+	add TILE_HEIGHT
 	dec d
 	jr nz, .loop
 	ret
