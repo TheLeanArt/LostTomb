@@ -102,6 +102,11 @@ ENDC
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
+.beard
+	ld a, [hli]
+	ld c, O_BEARD * OBJ_SIZE + OAMA_Y
+	ld [bc], a
+
 .scales
 	ld c, l
 	ld b, h

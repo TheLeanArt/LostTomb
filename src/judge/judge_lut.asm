@@ -30,6 +30,8 @@ FOR I, 8
 	db STRBYTE(#M_NOSE,    I) * 2 + T_NOSE
 	db STRBYTE(#M_MOUTH,   I) * 2 + T_MOUTH
 
+	db Y_BEARD_{d:I}
+
 	db Y_SOUL_{d:I}
 	db STRBYTE(#M_SOUL,    I * W_SOUL * H_SOUL)
 	db STRBYTE(#M_SOUL,    I * W_SOUL * H_SOUL + H_SOUL)
@@ -40,5 +42,5 @@ FOR I, 8
 	db Y_CHAIN_LEFT_{d:I}
 	db Y_CHAIN_RIGHT_{d:I}
 
-	ds 3
+	ds 2
 ENDR

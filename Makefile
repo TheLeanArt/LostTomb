@@ -17,6 +17,7 @@ RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge \
 	-D _EYE=$(T_EYE) \
 	-D _NOSE=$(T_NOSE) \
 	-D _MOUTH=$(T_MOUTH) \
+	-D _BEARD=$(T_BEARD) \
 	-D _TOP_LEFT=$(T_TOP_LEFT) \
 	-D _TOP_RIGHT=$(T_TOP_RIGHT) \
 
@@ -26,6 +27,7 @@ T_MOUTH     = 0C
 T_CHAIN     = 10
 T_SOUL      = 20
 T_FEATHER   = 40
+T_BEARD     = 44
 
 T_TOP_LEFT  = AE
 T_TOP_RIGHT = B0
@@ -52,6 +54,7 @@ JUDGE_1BPP = \
 	art/judge/judge_eye.1bpp \
 	art/judge/judge_nose.1bpp \
 	art/judge/judge_mouth.1bpp \
+	art/judge/judge_beard.1bpp \
 	art/judge/judge_scales.1bpp \
 	art/judge/judge_soul.1bpp \
 	art/judge/judge_feather.1bpp \
