@@ -10,7 +10,7 @@ All the differences from the animated GIF (that we're aware of):
 * Status bar scroll-in
 * Protagonist flip
 * Interpolated arm and wall graphics
-* Right-hand chain blends with the arm
+* Chains roll into the beam
 * Bubbles on the left are identical to those on the right
 * Caption changed to JUDGMENT COMETH
 * Health indicator blinks at half the frequency
