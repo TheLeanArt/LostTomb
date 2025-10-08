@@ -47,6 +47,7 @@ Judge::
 	ld de, Y_SOUL_0 << 8 | X_SOUL
 	call SetObject
 	call SetNextObject
+	inc b
 	ld de, (Y_SOUL_0 + TILE_HEIGHT) << 8 | X_SOUL
 	call SetObject
 	call SetNextObject
@@ -55,6 +56,7 @@ Judge::
 	ld b, T_FEATHER
 	ld de, Y_FEATHER_0 << 8 | X_FEATHER
 	call SetObject
+	inc b
 	ld d, Y_FEATHER_0 + TILE_HEIGHT
 	call SetObject
 
@@ -164,8 +166,10 @@ InitString:
 	ld a, e
 	sub TILE_WIDTH
 	ld e, a
-	call SetObject
+	call .nextRow
+
 	ld c, OAM_XFLIP
+	ld a, e
 	add TILE_WIDTH * 2
 	ld e, a
 	call SetObject
