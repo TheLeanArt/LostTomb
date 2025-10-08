@@ -19,7 +19,7 @@ DEF X_EYE_RIGHT    EQU 149
 
 DEF T_MOUTH        EQUS "${_MOUTH}"
 DEF O_MOUTH        EQU   3
-DEF Y_MOUTH        EQU  70
+DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
 
 DEF T_CHAIN        EQUS "${_CHAIN}"

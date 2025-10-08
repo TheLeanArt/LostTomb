@@ -39,7 +39,7 @@ Judge::
 	ld bc, T_EYE << 8 | OAM_XFLIP
 	ld e, X_EYE_RIGHT
 	call SetObject
-	ld b, T_MOUTH
+	ld bc, T_MOUTH << 8
 	ld de, Y_MOUTH << 8 | X_MOUTH
 	call SetObject
 
