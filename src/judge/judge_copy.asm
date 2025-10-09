@@ -38,7 +38,7 @@ ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
 	call ClearOAM
 
 
-SECTION "InitJudgeObjects", ROM0
+SECTION "SetObject", ROM0
 InitJudgeObjects:
 	ld hl, wShadowOAM
 	ld bc, T_EYE << 8
@@ -57,7 +57,9 @@ InitJudgeObjects:
 	ld bc, T_SOUL << 8
 	ld de, Y_SOUL_0 << 8 | X_SOUL
 	call SetObject
-	call SetNextObject
+	inc b                      ; Advance the tile ID
+	inc b                      ; Advance the tile ID
+	call SetAdjObject
 
 .feather
 	ld b, T_FEATHER
@@ -89,10 +91,32 @@ SetRightChainAndPlate::
 	ld b, T_PLATE
 	call SetAdjObject
 	call SetAdjObject
-	jp SetAdjObject
+	; Fall through
 
+SetAdjObject:
+	ld [hl], d                 ; Set the Y coordinate
+	inc l                      ; Increment the lower address byte
+	ld a, e                    ; Load the X coordinate from E
+	add TILE_WIDTH             ; Advance the X coordinate
+	ld [hli], a                ; Set the X coordinate
+	ld e, a                    ; Store the updated X coordinate
+	ld a, b                    ; Load the tile ID from B
+	ld [hli], a                ; Set the tile ID
+	ld a, c                    ; Load the attributes from C
+	ld [hli], a                ; Set the attributes
+	ret
 
-SECTION "SetLeftChainAndPlate", ROM0
+SetObject:
+	ld [hl], d                 ; Set the Y coordinate
+	inc l                      ; Increment the lower address byte
+	ld [hl], e                 ; Set the X coordinate
+	inc l                      ; Increment the lower address byte
+	ld [hl], b                 ; Set the tile ID
+	inc l                      ; Increment the lower address byte
+	ld [hl], c                 ; Set the attributes
+	inc l                      ; Increment the lower address byte
+	ret
+
 SetLeftChainAndPlate::
 	push de                    ; Save the flip indicator
 	call SetLeftChain          ; Update the chain
@@ -116,6 +140,65 @@ SetLeftPlate:
 	ld b, a                    ; Store the tile ID in B
 	ld e, X_PLATE_LEFT3        ; Store the X coordinate in E
 	jr SetObject               ; Set the third object and return
+
+InitChain:
+	ld bc, T_CHAIN << 8 | OAM_PRIO
+.loop
+	push af
+	call SetObject
+	ld a, d
+	add TILE_HEIGHT * 2
+	ld d, a
+	pop af
+	dec a
+	jr nz, .loop
+	ld b, T_SCALE_CONF
+	jr SetObject
+
+SetLeftChain:
+	ld d, a
+	ld e, X_CHAIN_LEFT
+	ld a, H_CHAIN_LEFT - 1
+	call InitChain
+	ld b, T_STRING2
+	; Fall through
+
+InitString:
+	ld a, e
+	sub TILE_WIDTH
+	ld e, a
+	call .nextRow
+
+	ld c, OAM_XFLIP
+	ld a, e
+	add TILE_WIDTH * 2
+	ld e, a
+	call SetObject
+
+	ld b, T_PLATE_SIDE
+	ld a, e
+	add TILE_WIDTH
+	ld e, a
+	ld a, TILE_HEIGHT * 2
+	call .next
+
+	ld a, e
+	sub TILE_WIDTH * 4
+	ld e, a
+	ld c, 0
+	call SetObject
+	ld a, d
+	add TILE_HEIGHT
+	ld d, a
+	ret
+
+.nextRow
+	ld a, TILE_HEIGHT
+
+.next
+	add d
+	ld d, a
+	jr SetObject
 
 
 SECTION "Copy1bppLongSafe", ROM0
@@ -193,96 +276,6 @@ CopyRow:
 	inc de
 	dec c
 	jr nz, .loop
-	ret
-
-
-SECTION "SetObject", ROM0
-InitChain:
-	ld bc, T_CHAIN << 8 | OAM_PRIO
-.loop
-	push af
-	call SetObject
-	ld a, d
-	add TILE_HEIGHT * 2
-	ld d, a
-	pop af
-	dec a
-	jr nz, .loop
-	ld b, T_SCALE_CONF
-	jr SetObject
-
-SetLeftChain:
-	ld d, a
-	ld e, X_CHAIN_LEFT
-	ld a, H_CHAIN_LEFT - 1
-	call InitChain
-	ld b, T_STRING2
-	; Fall through
-
-InitString:
-	ld a, e
-	sub TILE_WIDTH
-	ld e, a
-	call .nextRow
-
-	ld c, OAM_XFLIP
-	ld a, e
-	add TILE_WIDTH * 2
-	ld e, a
-	call SetObject
-
-	ld b, T_PLATE_SIDE
-	ld a, e
-	add TILE_WIDTH
-	ld e, a
-	ld a, TILE_HEIGHT * 2
-	call .next
-
-	ld a, e
-	sub TILE_WIDTH * 4
-	ld e, a
-	ld c, 0
-	call SetObject
-	ld a, d
-	add TILE_HEIGHT
-	ld d, a
-	ret
-
-.nextRow
-	ld a, TILE_HEIGHT
-
-.next
-	add d
-	ld d, a
-	jr SetObject
-
-SetNextObject:
-	inc b                      ; Advance the tile ID
-	inc b                      ; Advance the tile ID
-	; Fall through
-
-SetAdjObject:
-	ld [hl], d                 ; Set the Y coordinate
-	inc l                      ; Increment the lower address byte
-	ld a, e                    ; Load the X coordinate from E
-	add TILE_WIDTH             ; Advance the X coordinate
-	ld [hli], a                ; Set the X coordinate
-	ld e, a                    ; Store the updated X coordinate
-	ld a, b                    ; Load the tile ID from B
-	ld [hli], a                ; Set the tile ID
-	ld a, c                    ; Load the attributes from C
-	ld [hli], a                ; Set the attributes
-	ret
-
-SetObject:
-	ld [hl], d                 ; Set the Y coordinate
-	inc l                      ; Increment the lower address byte
-	ld [hl], e                 ; Set the X coordinate
-	inc l                      ; Increment the lower address byte
-	ld [hl], b                 ; Set the tile ID
-	inc l                      ; Increment the lower address byte
-	ld [hl], c                 ; Set the attributes
-	inc l                      ; Increment the lower address byte
 	ret
 
 
