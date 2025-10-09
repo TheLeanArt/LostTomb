@@ -36,6 +36,7 @@ OBJS = \
 	src/main.o \
 	src/oamdma.o \
 	src/judge/judge_copy.o \
+	src/judge/judge_obj.o \
 	src/judge/judge_main.o \
 	src/judge/judge_lut.o \
 	src/song_hideout.o \
