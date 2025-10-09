@@ -10,25 +10,7 @@ SYM = judgment.sym
 RGBLINKFLAGS = -n $(SYM)
 RGBFIXFLAGS  = -v -p 0xFF -t $(TITLE)
 RGBASMFLAGS  = -I inc
-RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge \
-	-D _SOUL=$(T_SOUL) \
-	-D _FEATHER=$(T_FEATHER) \
-	-D _CHAIN=$(T_CHAIN) \
-	-D _EYE=$(T_EYE) \
-	-D _NOSE=$(T_NOSE) \
-	-D _MOUTH=$(T_MOUTH) \
-	-D _TOP_LEFT=$(T_TOP_LEFT) \
-	-D _TOP_RIGHT=$(T_TOP_RIGHT) \
-
-T_CHAIN     = 00
-T_EYE       = 10
-T_NOSE      = 18
-T_MOUTH     = 1C
-T_SOUL      = 20
-T_FEATHER   = 40
-
-T_TOP_LEFT  = AE
-T_TOP_RIGHT = B0
+RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge
 
 OBJS = \
 	src/main.o \
@@ -115,10 +97,10 @@ art/judge/judge_chain.1bpp: art/judge/judge_chain.png
 	$(RGBGFX) -Z -d1 $< -o $@
 
 art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png
-	$(RGBGFX) -Z -d1 -T -b 0x$(T_SOUL) $< -o $@
+	$(RGBGFX) -Z -d1 -T $< -o $@
 
 art/judge/judge_feather.1bpp art/judge/judge_feather.tilemap: art/judge/judge_feather.png
-	$(RGBGFX) -uZ -d1 -T -b 0x$(T_FEATHER) $< -o $@
+	$(RGBGFX) -uZ -d1 -T $< -o $@
 
 art/judge/judge_eye.1bpp art/judge/judge_eye.tilemap: art/judge/judge_eye.png
 	$(RGBGFX) -u -d1 -T $< -o $@

@@ -31,11 +31,11 @@ FOR I, 8
 	db STRBYTE(#M_MOUTH,   I) * 2 + T_MOUTH
 
 	db Y_SOUL_{d:I}
-	db STRBYTE(#M_SOUL,    I * W_SOUL * H_SOUL)
-	db STRBYTE(#M_SOUL,    I * W_SOUL * H_SOUL + H_SOUL)
+	db STRBYTE(#M_SOUL,    I * W_SOUL * H_SOUL)          + T_SOUL
+	db STRBYTE(#M_SOUL,    I * W_SOUL * H_SOUL + H_SOUL) + T_SOUL
 
 	db Y_FEATHER_{d:I}
-	db STRBYTE(#M_FEATHER, I * W_FEATHER * H_FEATHER)
+	db STRBYTE(#M_FEATHER, I * W_FEATHER * H_FEATHER)    + T_FEATHER
 
 	db Y_CHAIN_LEFT_{d:I}
 	db Y_CHAIN_RIGHT_{d:I}
