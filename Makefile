@@ -10,31 +10,8 @@ SYM = judgment.sym
 RGBLINKFLAGS = -n $(SYM)
 RGBFIXFLAGS  = -v -p 0xFF -t $(TITLE)
 RGBASMFLAGS  = -I inc
-RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge \
-	-D _SOUL=$(T_SOUL) \
-	-D _FEATHER=$(T_FEATHER) \
-	-D _CHAIN=$(T_CHAIN) \
-	-D _EYE=$(T_EYE) \
-	-D _NOSE=$(T_NOSE) \
-	-D _MOUTH=$(T_MOUTH) \
-	-D _BEARD=$(T_BEARD) \
-	-D _EAR_LEFT=$(T_EAR_LEFT) \
-	-D _EAR_RIGHT=$(T_EAR_RIGHT) \
-	-D _TOP_LEFT=$(T_TOP_LEFT) \
-	-D _TOP_RIGHT=$(T_TOP_RIGHT) \
-
-T_EYE       = 00
-T_NOSE      = 08
-T_MOUTH     = 0C
-T_CHAIN     = 10
-T_SOUL      = 20
-T_FEATHER   = 40
-T_BEARD     = 44
-T_EAR_LEFT  = 46
-T_EAR_RIGHT = 48
-
-T_TOP_LEFT  = AA
-T_TOP_RIGHT = AC
+RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) \
+	-I art/judge
 
 OBJS = \
 	src/main.o \
@@ -62,6 +39,7 @@ JUDGE_1BPP = \
 	art/judge/judge_beard.1bpp \
 	art/judge/judge_ear_left.1bpp \
 	art/judge/judge_ear_right.1bpp \
+	art/judge/judge_chain.1bpp \
 	art/judge/judge_scales.1bpp \
 	art/judge/judge_soul.1bpp \
 	art/judge/judge_feather.1bpp \
@@ -111,7 +89,7 @@ src/judge/judge_lut.o: src/judge/judge_lut.asm $(INC) $(JUDGE_INC) $(JUDGE_MAIN_
 	$(RGBASM) $(RGBASMFLAGS_JUDGE) $< -o $@
 
 src/judge/%.o: src/judge/%.asm $(INC) $(JUDGE_INC)
-	$(RGBASM) $(RGBASMFLAGS_JUDGE) $< -o $@
+	$(RGBASM) $(RGBASMFLAGS) $< -o $@
 
 src/oamdma.o: src/oamdma.asm $(INC)
 	$(RGBASM) $(RGBASMFLAGS) $< -o $@
@@ -119,14 +97,14 @@ src/oamdma.o: src/oamdma.asm $(INC)
 src/%.o: src/%.asm $(INC)
 	$(RGBASM) $(RGBASMFLAGS) $< -o $@
 
-art/judge/judge_scales.1bpp: art/judge/judge_scales.png
+art/judge/judge_chain.1bpp: art/judge/judge_chain.png
 	$(RGBGFX) -Z -d1 $< -o $@
 
 art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png
-	$(RGBGFX) -Z -d1 -T -b 0x$(T_SOUL) $< -o $@
+	$(RGBGFX) -Z -d1 -T $< -o $@
 
 art/judge/judge_feather.1bpp art/judge/judge_feather.tilemap: art/judge/judge_feather.png
-	$(RGBGFX) -uZ -d1 -T -b 0x$(T_FEATHER) $< -o $@
+	$(RGBGFX) -uZ -d1 -T $< -o $@
 
 art/judge/judge_eye.1bpp art/judge/judge_eye.tilemap: art/judge/judge_eye.png
 	$(RGBGFX) -u -d1 -T $< -o $@

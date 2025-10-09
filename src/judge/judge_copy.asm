@@ -7,30 +7,42 @@ include "defs.inc"
 include "judge.inc"
 
 
+MACRO COPY_1BPP_LONG_SAFE
+	ld bc, \1Tiles.end - \1Tiles
+	call Copy1bppLongSafe
+ENDM
+
+MACRO COPY_1BPP_HALF_SAFE
+ASSERT HIGH(\1Tiles.end) == HIGH(\1Tiles)
+	ld b, (\1Tiles.end - \1Tiles) / 8
+	call Copy1bppHalfSafe
+ENDM
+
+MACRO COPY_2BPP_SAFE
+ASSERT HIGH(\1Tiles.end) == HIGH(\1Tiles)
+	ld b, \1Tiles.end - \1Tiles
+	call Copy2bppSafe
+ENDM
+
 SECTION FRAGMENT "Judge", ROM0
 Judge::
 	xor a
 	ldh [rBGP], a              ; Mask out the tile update
 
 	ld hl, STARTOF(VRAM)
-	ld de, Obj8Tiles
-	ld b, (Obj8Tiles.end - Obj8Tiles) >> 3
-ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
-	call Copy1bppHalfSafe
+	ld de, JudgeChainTiles
+	COPY_1BPP_LONG_SAFE JudgeChain
 
-	ld bc, Obj16Tiles.end - Obj16Tiles
-	call Copy1bppLongSafe
+	ld de, JudgeObj8Tiles
+	COPY_1BPP_HALF_SAFE JudgeObj8
+	COPY_1BPP_LONG_SAFE JudgeObj16
 
 	ld hl, STARTOF(VRAM) | $0800
-	ld bc, Back2Tiles.end - Back2Tiles
-	call Copy1bppLongSafe
-
-	ld b, BackTiles.end - BackTiles
-	call Copy2bppSafe
+	COPY_1BPP_LONG_SAFE JudgeBack2
+	COPY_2BPP_SAFE JudgeBack
 
 	ld hl, STARTOF(VRAM) | $1000
-	ld bc, Back1Tiles.end - Back1Tiles
-	call Copy1bppLongSafe
+	COPY_1BPP_LONG_SAFE JudgeBack1
 
 	call CopyMaps
 
@@ -114,31 +126,43 @@ CopyRow:
 
 
 SECTION "Judgment Tile Data", ROMX, ALIGN[8]
-Obj8Tiles:
-	INCBIN "judge_eye.1bpp"
-	INCBIN "judge_nose.1bpp"
-	INCBIN "judge_mouth.1bpp"
-.end
+JudgeChainTiles::
+	INCBIN "judge_chain.1bpp"
+.end::
 
-Obj16Tiles:
+JudgeObj8Tiles::
 	INCBIN "judge_scales.1bpp"
+.eye::
+	INCBIN "judge_eye.1bpp"
+.nose::
+	INCBIN "judge_nose.1bpp"
+.mouth::
+	INCBIN "judge_mouth.1bpp"
+.end::
+
+JudgeObj16Tiles::
+.soul::
 	INCBIN "judge_soul.1bpp"
+.feather::
 	INCBIN "judge_feather.1bpp"
+.beard::
 	INCBIN "judge_beard.1bpp"
+.earLeft::
 	INCBIN "judge_ear_left.1bpp"
+.earRight::
 	INCBIN "judge_ear_right.1bpp"
-.end
+.end::
 
-Back2Tiles:
+JudgeBack2Tiles::
 	INCBIN "judge_back.1bpp", 1024
-.end
+.end::
 
-BackTiles:
+JudgeBackTiles:
 	INCBIN "judge_top_left.2bpp"
 	INCBIN "judge_top_right.2bpp"
 .end
 
-Back1Tiles:
+JudgeBack1Tiles:
 	INCBIN "judge_back.1bpp", 0, 1024
 .end
 
