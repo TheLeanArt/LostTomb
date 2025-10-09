@@ -20,10 +20,10 @@ RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge \
 	-D _TOP_LEFT=$(T_TOP_LEFT) \
 	-D _TOP_RIGHT=$(T_TOP_RIGHT) \
 
-T_EYE       = 00
-T_NOSE      = 08
-T_MOUTH     = 0C
-T_CHAIN     = 10
+T_CHAIN     = 00
+T_EYE       = 10
+T_NOSE      = 18
+T_MOUTH     = 1C
 T_SOUL      = 20
 T_FEATHER   = 40
 
@@ -53,6 +53,7 @@ JUDGE_1BPP = \
 	art/judge/judge_eye.1bpp \
 	art/judge/judge_nose.1bpp \
 	art/judge/judge_mouth.1bpp \
+	art/judge/judge_chain.1bpp \
 	art/judge/judge_scales.1bpp \
 	art/judge/judge_soul.1bpp \
 	art/judge/judge_feather.1bpp \
@@ -110,7 +111,7 @@ src/oamdma.o: src/oamdma.asm $(INC)
 src/%.o: src/%.asm $(INC)
 	$(RGBASM) $(RGBASMFLAGS) $< -o $@
 
-art/judge/judge_scales.1bpp: art/judge/judge_scales.png
+art/judge/judge_chain.1bpp: art/judge/judge_chain.png
 	$(RGBGFX) -Z -d1 $< -o $@
 
 art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png

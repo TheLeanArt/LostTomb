@@ -7,30 +7,35 @@ include "defs.inc"
 include "judge.inc"
 
 
+MACRO COPY_1BPP_LONG_SAFE
+	ld bc, \1Tiles.end - \1Tiles
+	call Copy1bppLongSafe
+ENDM
+
 SECTION FRAGMENT "Judge", ROM0
 Judge::
 	xor a
 	ldh [rBGP], a              ; Mask out the tile update
 
 	ld hl, STARTOF(VRAM)
+	ld de, ChainTiles
+	COPY_1BPP_LONG_SAFE Chain
+
 	ld de, Obj8Tiles
 	ld b, (Obj8Tiles.end - Obj8Tiles) >> 3
 ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
 	call Copy1bppHalfSafe
 
-	ld bc, Obj16Tiles.end - Obj16Tiles
-	call Copy1bppLongSafe
+	COPY_1BPP_LONG_SAFE Obj16
 
 	ld hl, STARTOF(VRAM) | $0800
-	ld bc, Back2Tiles.end - Back2Tiles
-	call Copy1bppLongSafe
+	COPY_1BPP_LONG_SAFE Back2
 
 	ld b, BackTiles.end - BackTiles
 	call Copy2bppSafe
 
 	ld hl, STARTOF(VRAM) | $1000
-	ld bc, Back1Tiles.end - Back1Tiles
-	call Copy1bppLongSafe
+	COPY_1BPP_LONG_SAFE Back1
 
 	call CopyMaps
 
@@ -114,14 +119,18 @@ CopyRow:
 
 
 SECTION "Judgment Tile Data", ROMX, ALIGN[8]
+ChainTiles:
+	INCBIN "judge_chain.1bpp"
+.end
+
 Obj8Tiles:
+	INCBIN "judge_scales.1bpp"
 	INCBIN "judge_eye.1bpp"
 	INCBIN "judge_nose.1bpp"
 	INCBIN "judge_mouth.1bpp"
 .end
 
 Obj16Tiles:
-	INCBIN "judge_scales.1bpp"
 	INCBIN "judge_soul.1bpp"
 	INCBIN "judge_feather.1bpp"
 .end
