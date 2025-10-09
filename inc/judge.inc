@@ -7,23 +7,23 @@ DEF Y_WINDOW_INIT  EQU SCREEN_HEIGHT_PX
 DEF Y_WINDOW_FINAL EQU SCREEN_HEIGHT_PX - 8
 DEF X_WINDOW_INIT  EQU WX_OFS
 
-DEF T_EYE          EQUS "${_EYE}"
+DEF T_EYE          EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.eye - JudgeObj8Tiles)) / 4"
 DEF O_EYE_LEFT     EQU   0
 DEF Y_EYE          EQU  49
 DEF X_EYE_LEFT     EQU 136
 
-DEF T_NOSE         EQUS "${_NOSE}"
+DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.nose - JudgeObj8Tiles)) / 4"
 DEF O_NOSE         EQU O_EYE_LEFT    + 1
 
 DEF O_EYE_RIGHT    EQU O_NOSE        + 1
 DEF X_EYE_RIGHT    EQU 149
 
-DEF T_MOUTH        EQUS "${_MOUTH}"
+DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
 DEF O_MOUTH        EQU O_EYE_RIGHT   + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
 
-DEF T_BEARD        EQUS "${_BEARD}"
+DEF T_BEARD        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.beard - JudgeObj16Tiles) / 2) / 4"
 DEF O_BEARD        EQU  O_MOUTH      + 1
 DEF Y_BEARD        EQU  80
 DEF X_BEARD        EQU 142
@@ -36,16 +36,17 @@ ELSE
 ENDC
 ENDR
 
-DEF T_CHAIN        EQUS "${_CHAIN}"
+DEF T_CHAIN        EQU $00
 DEF T_SCALE_CONF   EQU T_CHAIN       + 2
 DEF T_STRING2      EQU T_SCALE_CONF  + 2
-DEF T_STRING       EQU T_STRING2     + 2
-DEF T_PLATE_SIDE   EQU T_STRING      + 2
-DEF T_PLATE_LEFT1  EQU T_PLATE_SIDE  + 2
+DEF T_PLATE_SIDE   EQU T_STRING2     + 2
+DEF T_STRING       EQU T_PLATE_SIDE  + 2
+DEF T_PLATE_LEFT1  EQU T_STRING      + 2
 DEF T_PLATE_LEFT2  EQU T_PLATE_LEFT1 + 2
 DEF T_PLATE        EQU T_PLATE_LEFT2 + 2
 
-DEF T_SOUL         EQUS "${_SOUL}"
+DEF T_SOUL         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
+
 DEF O_SOUL         EQU O_BEARD + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
@@ -60,7 +61,7 @@ DEF Y_SOUL_5       EQU Y_SOUL_0 - 3
 DEF Y_SOUL_6       EQU Y_SOUL_0 - 2
 DEF Y_SOUL_7       EQU Y_SOUL_0 - 1
 
-DEF T_FEATHER      EQUS "${_FEATHER}"
+DEF T_FEATHER      EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.feather - JudgeObj16Tiles) / 2) / 4"
 DEF O_FEATHER      EQU O_SOUL + W_SOUL
 DEF H_FEATHER      EQU   2
 DEF W_FEATHER      EQU   1
@@ -135,12 +136,12 @@ DEF MAP_HEALTH     EQU  TILEMAP1
 DEF ROW_HEALTH     EQU   0
 DEF COL_HEALTH     EQU  16
 
-DEF T_TOP_LEFT1    EQUS "${_TOP_LEFT}"
-DEF T_TOP_LEFT2    EQU  T_TOP_LEFT1 + 1
+DEF T_TOP_LEFT1    EQUS "(JudgeBack2Tiles.end - JudgeBack2Tiles) >> 3 | $80"
+DEF T_TOP_LEFT2    EQUS "T_TOP_LEFT1 + 1"
 DEF COL_TOP_LEFT   EQU   3
 DEF ROW_TOP_LEFT   EQU   4
 
-DEF T_TOP_RIGHT    EQUS "${_TOP_RIGHT}"
+DEF T_TOP_RIGHT    EQUS "T_TOP_LEFT2 + 1"
 DEF COL_TOP_RIGHT  EQU  10
 DEF ROW_TOP_RIGHT  EQU   2
 

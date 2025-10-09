@@ -62,7 +62,14 @@ SetRightChainAndPlate::
 	ld d, a
 	ld a, H_CHAIN_RIGHT - 1
 	call InitChain
+
 	ld b, T_STRING
+	ld a, TILE_HEIGHT * 2
+	ld e, X_CHAIN_RIGHT - TILE_WIDTH
+	call InitNextString
+
+	ld e, X_CHAIN_RIGHT + TILE_WIDTH
+	ld a, TILE_HEIGHT
 	call InitString
 
 	ld b, T_PLATE
@@ -132,32 +139,36 @@ InitChain:
 	ld b, T_SCALE_CONF
 	jr SetObject
 
+InitNextString:
+	add d
+	ld d, a
+	jr SetObject
+
+
+SECTION "InitString", ROM0
 SetLeftChain:
 	ld d, a
 	ld e, X_CHAIN_LEFT
 	ld a, H_CHAIN_LEFT - 1
 	call InitChain
+
 	ld b, T_STRING2
+	ld a, TILE_HEIGHT
+	ld e, X_CHAIN_LEFT - TILE_WIDTH
+	call InitNextString
+
+	ld e, X_CHAIN_LEFT + TILE_WIDTH
+	ld a, TILE_HEIGHT * 2
 	; Fall through
 
 InitString:
-	ld a, e
-	sub TILE_WIDTH
-	ld e, a
-	call .nextRow
-
 	ld c, OAM_XFLIP
-	ld a, e
-	add TILE_WIDTH * 2
-	ld e, a
 	call SetObject
 
+	add d
+	ld d, a
 	ld b, T_PLATE_SIDE
-	ld a, e
-	add TILE_WIDTH
-	ld e, a
-	ld a, TILE_HEIGHT * 2
-	call .next
+	call SetAdjObject
 
 	ld a, e
 	sub TILE_WIDTH * 4
@@ -168,11 +179,3 @@ InitString:
 	add TILE_HEIGHT
 	ld d, a
 	ret
-
-.nextRow
-	ld a, TILE_HEIGHT
-
-.next
-	add d
-	ld d, a
-	jr SetObject
