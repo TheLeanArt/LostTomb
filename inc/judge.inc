@@ -104,7 +104,7 @@ DEF COL_BUBBLE3    EQU  17
 DEF W_FIN          EQU   4
 DEF MAP_FIN        EQU TILEMAP0
 DEF ROW_FIN        EQU  15
-DEF COL_FIN        EQU   8
+DEF COL_FIN        EQU   9
 
 DEF W_PAW          EQU   4
 DEF H_PAW          EQU   3
