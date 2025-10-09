@@ -10,7 +10,8 @@ SYM = judgment.sym
 RGBLINKFLAGS = -n $(SYM)
 RGBFIXFLAGS  = -v -p 0xFF -t $(TITLE)
 RGBASMFLAGS  = -I inc
-RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) -I inc -I art/judge
+RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) \
+	-I art/judge
 
 OBJS = \
 	src/main.o \
@@ -85,7 +86,7 @@ src/judge/judge_lut.o: src/judge/judge_lut.asm $(INC) $(JUDGE_INC) $(JUDGE_MAIN_
 	$(RGBASM) $(RGBASMFLAGS_JUDGE) $< -o $@
 
 src/judge/%.o: src/judge/%.asm $(INC) $(JUDGE_INC)
-	$(RGBASM) $(RGBASMFLAGS_JUDGE) $< -o $@
+	$(RGBASM) $(RGBASMFLAGS) $< -o $@
 
 src/oamdma.o: src/oamdma.asm $(INC)
 	$(RGBASM) $(RGBASMFLAGS) $< -o $@
