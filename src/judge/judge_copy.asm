@@ -34,6 +34,12 @@ ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
 
 	call CopyMaps
 
+	call InitJudgeObjects
+	call ClearOAM
+
+
+SECTION "InitJudgeObjects", ROM0
+InitJudgeObjects:
 	ld hl, wShadowOAM
 	ld bc, T_EYE << 8
 	ld de, Y_EYE << 8 | X_EYE_LEFT
@@ -59,23 +65,23 @@ ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
 	call SetObject
 
 .left
-	ld a, H_CHAIN_LEFT - 1
-	ld de, Y_CHAIN_LEFT_0 << 8 | X_CHAIN_LEFT
-	call InitChain
-	ld b, T_STRING2
-	call InitString
-
-	call SetNextObject
-	call SetNextObject
-	call SetNextObject
+	ld a, Y_CHAIN_LEFT_0
+	call SetLeftChain
+	call SetLeftPlate
 
 .right
+	ld a, Y_CHAIN_RIGHT_0
+	; Fall through
+
+SetRightChainAndPlate::
+	ld d, a
+	ld e, X_CHAIN_RIGHT
 	ld bc, T_CHAIN << 8 | OAM_PRIO | OAM_YFLIP
-	ld de, Y_CHAIN_RIGHT_0 << 8 | X_CHAIN_RIGHT
 	call SetObject
 
+	add DX_CHAIN_RIGHT + TILE_HEIGHT * 2
+	ld d, a
 	ld a, H_CHAIN_RIGHT - 1
-	ld de, (Y_CHAIN_RIGHT_0 + TILE_HEIGHT * 2 + DX_CHAIN_RIGHT) << 8 | X_CHAIN_RIGHT
 	call InitChain
 	ld b, T_STRING
 	call InitString
@@ -83,9 +89,33 @@ ASSERT HIGH(Obj8Tiles.end) == HIGH(Obj8Tiles)
 	ld b, T_PLATE
 	call SetAdjObject
 	call SetAdjObject
-	call SetAdjObject
+	jp SetAdjObject
 
-	call ClearOAM
+
+SECTION "SetLeftChainAndPlate", ROM0
+SetLeftChainAndPlate::
+	push de                    ; Save the flip indicator
+	call SetLeftChain          ; Update the chain
+	ld d, a                    ; Store the Y value in D
+	pop bc                     ; Restore the flip indicator in C
+	; Fall through
+
+SetLeftPlate:
+	ld a, c                    ; Load the flip indicator into A
+	rlc c                      ; Multiply C by 4
+	rlc c                      ; ...
+	rrca                       ; Divide A by 2
+	add T_PLATE_LEFT1          ; Calculate left tile ID
+	ld b, a                    ; Store the tile ID in B
+	ld e, X_PLATE_LEFT1        ; Store the X coordinate in E
+	call SetObject             ; Set the first object
+	ld b, T_PLATE_LEFT2        ; Store the tile ID in B
+	ld e, X_PLATE_LEFT2        ; Store the X coordinate in E
+	call SetObject             ; Set the second object
+	xor T_PLATE ^ T_PLATE_LEFT1; Flip first and third
+	ld b, a                    ; Store the tile ID in B
+	ld e, X_PLATE_LEFT3        ; Store the X coordinate in E
+	jr SetObject               ; Set the third object and return
 
 
 SECTION "Copy1bppLongSafe", ROM0
@@ -180,6 +210,14 @@ InitChain:
 	jr nz, .loop
 	ld b, T_SCALE_CONF
 	jr SetObject
+
+SetLeftChain:
+	ld d, a
+	ld e, X_CHAIN_LEFT
+	ld a, H_CHAIN_LEFT - 1
+	call InitChain
+	ld b, T_STRING2
+	; Fall through
 
 InitString:
 	ld a, e
