@@ -109,8 +109,8 @@ art/judge/judge_nose.1bpp: art/judge/judge_nose.png
 art/judge/judge_mouth.1bpp: art/judge/judge_mouth.png
 	$(RGBGFX) -Z -d1 $< -o $@
 
-art/judge/judge_status.1bpp art/judge/judge_status.tilemap: art/judge/judge_status.png art/judge/blank.1bpp
-	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/blank.1bpp
+art/judge/judge_status.1bpp art/judge/judge_status.tilemap: art/judge/judge_status.png art/judge/judge_health.1bpp
+	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_health.1bpp
 
 art/judge/judge_cat.1bpp art/judge/judge_cat.tilemap: art/judge/judge_cat.png art/judge/judge_status.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_status.1bpp
