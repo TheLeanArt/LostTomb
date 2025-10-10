@@ -7,8 +7,6 @@ include "defs.inc"
 include "judge.inc"
 
 
-DEF M_WAVE    EQUS READFILE("judge_wave.tilemap")
-DEF M_BUBBLE  EQUS READFILE("judge_bubble.tilemap")
 DEF M_CAT     EQUS READFILE("judge_cat.tilemap")
 DEF M_EYE     EQUS READFILE("judge_eye.tilemap")
 DEF M_SOUL    EQUS READFILE("judge_soul.tilemap")
@@ -18,11 +16,10 @@ SECTION "JudgeLUT", ROMX, ALIGN[9]
 JudgeLUT::
 
 FOR I, 8
-	INCBIN "judge_paw.tilemap", I * H_PAW * W_PAW, H_PAW * W_PAW
-	INCBIN "judge_fin.tilemap", I * W_FIN, W_FIN
-	db STRBYTE(#M_WAVE,    I)
-	db STRBYTE(#M_BUBBLE,  I)
 	db STRBYTE(#M_CAT,     I)
+
+	INCBIN "judge_fin.tilemap", I * W_FIN, W_FIN
+	INCBIN "judge_paw.tilemap", I * H_PAW * W_PAW, H_PAW * W_PAW
 
 	db STRBYTE(#M_EYE,     I) * 2 + T_EYE
 	db T_NOSE_{d:I}
@@ -38,5 +35,5 @@ FOR I, 8
 	db Y_CHAIN_LEFT_{d:I}
 	db Y_CHAIN_RIGHT_{d:I}
 
-	ds 3
+	ds 5
 ENDR

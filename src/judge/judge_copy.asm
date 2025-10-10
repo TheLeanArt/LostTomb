@@ -145,8 +145,8 @@ JudgeObj16Tiles::
 	INCBIN "judge_soul.1bpp"
 .feather::
 	INCBIN "judge_feather.1bpp"
-.beard::
-	INCBIN "judge_beard.1bpp"
+.cart::
+	INCBIN "judge_cart.1bpp"
 .earLeft::
 	INCBIN "judge_ear_left.1bpp"
 .earRight::
