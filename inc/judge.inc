@@ -33,10 +33,14 @@ DEF O_MOUTH        EQU O_NOSE        + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
 
-DEF T_BEARD        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.beard - JudgeObj16Tiles) / 2) / 4"
-DEF O_BEARD        EQU  O_MOUTH      + 1
-DEF Y_BEARD        EQU  80
-DEF X_BEARD        EQU 142
+IF !DEF (JUDGE_CART)
+	DEF JUDGE_CART    EQU 0
+ENDC
+
+DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
+DEF O_CART         EQU  O_MOUTH      + 1
+DEF Y_CART         EQU  80
+DEF X_CART         EQU 142
 
 FOR I, 8
 IF I >= 4 && I <= 6
@@ -57,7 +61,7 @@ DEF T_PLATE        EQU T_PLATE_LEFT2 + 2
 
 DEF T_SOUL         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
 
-DEF O_SOUL         EQU O_BEARD + 1
+DEF O_SOUL         EQU O_CART + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
 DEF X_SOUL         EQU  28
