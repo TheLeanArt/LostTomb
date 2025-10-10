@@ -48,7 +48,7 @@ ENDC
 
 	ld a, e
 	and $07
-	jr nz, .loopCont
+	jp nz, .loopCont
 
 	ld a, e
 	and $38
@@ -84,6 +84,16 @@ ENDC
 	ld a, [hli]
 	ld c, LOW(ROW_CAT * TILEMAP_WIDTH + COL_CAT)
 	ld [bc], a
+	inc c
+
+.scarfTip
+	ld a, [hli]
+	ld [bc], a
+REPT 2
+	inc c
+	inc a
+	ld [bc], a
+ENDR
 
 .eyes
 	ld a, [hli]
@@ -102,10 +112,17 @@ ENDC
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
+.scarf
+	add T_SCARF - T_MOUTH
+	ld c, O_SCARF_RIGHT * OBJ_SIZE + OAMA_TILEID
+	ld [bc], a
+	ld c, O_SCARF_LEFT * OBJ_SIZE + OAMA_TILEID
+	ld [bc], a
+
 .beard
 	rrca                          ; Divide A by 2
 	cpl                           ; Negate
-	add Y_BEARD + T_MOUTH / 2 + 1 ; Adjust beard's Y coordinate
+	add Y_BEARD + T_SCARF / 2 + 1 ; Adjust beard's Y coordinate
 	ld c, O_BEARD * OBJ_SIZE + OAMA_Y
 	ld [bc], a                    ; Set Y
 

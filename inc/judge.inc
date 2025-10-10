@@ -18,14 +18,22 @@ DEF O_NOSE         EQU O_EYE_LEFT    + 1
 DEF O_EYE_RIGHT    EQU O_NOSE        + 1
 DEF X_EYE_RIGHT    EQU 149
 
+DEF T_SCARF        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.scarf - JudgeObj16Tiles) / 2) / 4"
+DEF O_SCARF_RIGHT  EQU O_EYE_RIGHT  + 1
+DEF X_SCARF_RIGHT  EQU 149
+
+DEF O_SCARF_LEFT   EQU O_SCARF_RIGHT + 1
+DEF Y_SCARF        EQU  80
+DEF X_SCARF_LEFT   EQU 136
+
 DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
-DEF O_MOUTH        EQU O_EYE_RIGHT   + 1
+DEF O_MOUTH        EQU O_SCARF_LEFT   + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
 
 DEF T_BEARD        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.beard - JudgeObj16Tiles) / 2) / 4"
 DEF O_BEARD        EQU  O_MOUTH      + 1
-DEF Y_BEARD        EQU  80
+DEF Y_BEARD        EQU  81
 DEF X_BEARD        EQU 142
 
 DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
@@ -145,6 +153,8 @@ DEF ROW_TOP_LEFT   EQU   4
 DEF T_TOP_RIGHT    EQUS "T_TOP_LEFT2 + 1"
 DEF COL_TOP_RIGHT  EQU  10
 DEF ROW_TOP_RIGHT  EQU   2
+
+DEF T_SCARF_TIP    EQU $27
 
 DEF MUSIC_DELAY    EQU $40
 DEF MUSIC_STEREO   EQU   1

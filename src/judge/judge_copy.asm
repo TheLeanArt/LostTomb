@@ -151,6 +151,8 @@ JudgeObj16Tiles::
 	INCBIN "judge_ear_left.1bpp"
 .earRight::
 	INCBIN "judge_ear_right.1bpp"
+.scarf::
+	INCBIN "judge_scarf.1bpp"
 .end::
 
 JudgeBack2Tiles::
