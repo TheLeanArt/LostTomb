@@ -4,3 +4,5 @@
 
 
 DEF STACK_SIZE     EQU  32
+
+DEF JUDGE_HEALTH   EQU   1

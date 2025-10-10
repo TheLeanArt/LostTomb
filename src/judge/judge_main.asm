@@ -53,34 +53,48 @@ ENDC
 	ld a, e
 	and $38
 	add a
-	ld l, a
 	swap a
+	ld b, a
 
-	and $02
-	add T_HEALTH_FULL
+IF JUDGE_HEALTH < 2
+
+	and 1 << JUDGE_HEALTH
+REPT JUDGE_HEALTH
+	rrca
+ENDR
+	add T_HEALTH_HALF
 	ld [MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH], a
 
+ELSE
+
+; Optimized by calc84maniac
+	cpl
+	add MAX_HEALTH + 1
+	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
+.healthLoop
+	sub 2
+	ld d, T_HEALTH_FULL
+	jr nc, .healthCont
+	add d                      ; T_HEALTH_EMPTY or T_HEALTH_HALF
+	ld d, a
+	xor a
+.healthCont
+	ld [hl], d
+	inc l
+	bit 2, l
+	jr z, .healthLoop
+
+ENDC
+
+.wave
+	ld l, b
+	call UpdateWaveAndBubble
+
+	swap l
 	ld h, HIGH(JudgeLUT) >> 1
 	add hl, hl
-	call SetPawAndFin
 
-	ld a, [hli]
-	ld c, LOW(ROW_WAVE * TILEMAP_WIDTH + COL_WAVE)
-.waveLoop
-	ld [bc], a
-	inc c
-	bit TZCOUNT(TILEMAP_WIDTH), c
-	jr z, .waveLoop
-
-	ld a, [hli]
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE1)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE2)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE3)
-	ld [bc], a
-
+.cat
 	ld a, [hli]
 	ld c, LOW(ROW_CAT * TILEMAP_WIDTH + COL_CAT)
 	ld [bc], a
@@ -94,6 +108,9 @@ REPT 2
 	inc a
 	ld [bc], a
 ENDR
+
+.fin
+	call UpdateFinAndPaw
 
 .eyes
 	ld a, [hli]
@@ -119,10 +136,12 @@ ENDR
 	ld c, O_SCARF_LEFT * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
+IF JUDGE_CART
 	rrca                          ; Divide A by 2
-	add Y_BEARD - T_SCARF / 2 - 1 ; Adjust beard's Y coordinate
-	ld c, O_BEARD * OBJ_SIZE + OAMA_Y
+	add Y_CART - T_SCARF / 2 - 1 ; Adjust cart's Y coordinate
+	ld c, O_CART * OBJ_SIZE + OAMA_Y
 	ld [bc], a                    ; Set Y
+ENDC
 
 .ears
 	ld a, e                       ; Load the value in E into A
@@ -185,19 +204,48 @@ ENDR
 	jp .loop
 
 
-SECTION "SetPawAndFin", ROM0
-SetPawAndFin:
+SECTION "UpdateWaveAndBubble", ROM0
+UpdateWaveAndBubble:
+.wave
+	ld a, l
+	bit 7, e
+	jr z, .cont
+	cpl
+.cont
+	and $07
+	add T_WAVE
+	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
+.loop
+	ld [bc], a
+	inc c
+	bit TZCOUNT(TILEMAP_WIDTH), c
+	jr z, .loop
 
-FOR Y, ROW_PAW, ROW_PAW + H_PAW
-IF Y == ROW_PAW
-	ld bc, MAP_PAW + ROW_PAW * TILEMAP_WIDTH + COL_PAW
-ELSE
-	ld c, Y * TILEMAP_WIDTH + COL_PAW
-ENDC
+.bubble
+	ld a, l
+	add T_BUBBLE
+	ld [bc], a
+	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE1)
+	ld [bc], a
+	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE2)
+	ld [bc], a
+	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE3)
+	ld [bc], a
+	ret
+
+
+SECTION "UpdateFinAndPaw", ROM0
+UpdateFinAndPaw:
+.fin
+	ld c, LOW(ROW_FIN * TILEMAP_WIDTH + COL_FIN)
 	call CopyFour
-ENDR
 
-	ld bc, MAP_FIN + ROW_FIN * TILEMAP_WIDTH + COL_FIN
+.paw
+	ld bc, MAP_PAW + ROW_PAW * TILEMAP_WIDTH + COL_PAW
+	call CopyFour
+	ld c, (ROW_PAW + 1) * TILEMAP_WIDTH + COL_PAW
+	call CopyFour
+	ld c, (ROW_PAW + 2) * TILEMAP_WIDTH + COL_PAW
 	; Fall through
 
 CopyFour:

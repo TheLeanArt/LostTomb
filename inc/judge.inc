@@ -29,11 +29,6 @@ DEF O_NOSE         EQU O_SCARF_LEFT  + 1
 DEF Y_NOSE         EQU  48
 DEF X_NOSE         EQU 144
 
-DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
-DEF O_MOUTH        EQU O_NOSE       + 1
-DEF Y_MOUTH        EQU  72
-DEF X_MOUTH        EQU 142
-
 FOR I, 8
 IF I == 5
 	DEF T_NOSE_{d:I}  EQUS "T_NOSE + 2"
@@ -42,20 +37,10 @@ ELSE
 ENDC
 ENDR
 
-DEF T_BEARD        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.beard - JudgeObj16Tiles) / 2) / 4"
-DEF O_BEARD        EQU  O_MOUTH      + 1
-DEF Y_BEARD        EQU  81
-DEF X_BEARD        EQU 142
-
-DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
-DEF O_EAR_LEFT     EQU O_BEARD       + 1
-DEF Y_EAR_LEFT     EQU 27
-DEF X_EAR_LEFT     EQU 128
-
-DEF T_EAR_RIGHT    EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
-DEF O_EAR_RIGHT    EQU O_EAR_LEFT    + 1
-DEF Y_EAR_RIGHT    EQU 25
-DEF X_EAR_RIGHT    EQU 158
+DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
+DEF O_MOUTH        EQU O_NOSE       + 1
+DEF Y_MOUTH        EQU  72
+DEF X_MOUTH        EQU 142
 
 FOR I, 8
 IF I >= 4 && I <= 6
@@ -64,6 +49,25 @@ ELSE
 	DEF T_MOUTH_{d:I} EQUS "T_MOUTH + 2"
 ENDC
 ENDR
+
+IF !DEF (JUDGE_CART)
+	DEF JUDGE_CART    EQU 0
+ENDC
+
+DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
+DEF O_CART         EQU  O_MOUTH      + 1
+DEF Y_CART         EQU  80
+DEF X_CART         EQU 142
+
+DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
+DEF O_EAR_LEFT     EQU O_CART        + 1
+DEF Y_EAR_LEFT     EQU 27
+DEF X_EAR_LEFT     EQU 128
+
+DEF T_EAR_RIGHT    EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
+DEF O_EAR_RIGHT    EQU O_EAR_LEFT    + 1
+DEF Y_EAR_RIGHT    EQU 25
+DEF X_EAR_RIGHT    EQU 158
 
 DEF T_CHAIN        EQU $00
 DEF T_SCALE_CONF   EQU T_CHAIN       + 2
@@ -134,9 +138,13 @@ DEF O_CHAIN_RIGHT  EQU O_CHAIN_RIGHT2 + H_CHAIN_RIGHT2
 DEF O_STRING_RIGHT EQU O_CHAIN_RIGHT  + H_CHAIN_RIGHT
 DEF O_PLATE_RIGHT  EQU O_STRING_RIGHT + 4
 
+DEF T_WAVE         EQU $17
+DEF MAP_WAVE       EQU TILEMAP0
 DEF ROW_WAVE       EQU  14
 DEF COL_WAVE       EQU   0
 
+DEF T_BUBBLE       EQU $1F
+DEF MAP_BUBBLE     EQU TILEMAP0
 DEF ROW_BUBBLE     EQU  15
 DEF COL_BUBBLE0    EQU   0
 DEF COL_BUBBLE1    EQU   6
@@ -157,12 +165,18 @@ DEF COL_PAW        EQU   5
 DEF ROW_CAT        EQU  10
 DEF COL_CAT        EQU  15
 
-DEF T_HEALTH_FULL  EQU $0D
-DEF T_HEALTH_EMPTY EQU $0E
+IF !DEF (JUDGE_HEALTH)
+	DEF JUDGE_HEALTH  EQU 0
+ENDC
+
+DEF T_HEALTH_EMPTY EQU $01
+DEF T_HEALTH_HALF  EQU $02
+DEF T_HEALTH_FULL  EQU $03
 
 DEF MAP_HEALTH     EQU  TILEMAP1
 DEF ROW_HEALTH     EQU   0
 DEF COL_HEALTH     EQU  16
+DEF MAX_HEALTH     EQU   8
 
 DEF T_TOP_LEFT1    EQUS "(JudgeBack2Tiles.end - JudgeBack2Tiles) >> 3 | $80"
 DEF T_TOP_LEFT2    EQUS "T_TOP_LEFT1 + 1"
