@@ -33,7 +33,7 @@ DEF X_MOUTH        EQU 142
 
 DEF T_BEARD        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.beard - JudgeObj16Tiles) / 2) / 4"
 DEF O_BEARD        EQU  O_MOUTH      + 1
-DEF Y_BEARD        EQU  80
+DEF Y_BEARD        EQU  81
 DEF X_BEARD        EQU 142
 
 DEF T_CHAIN        EQU $00

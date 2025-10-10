@@ -29,10 +29,8 @@ FOR I, 8
 
 IF I >= 4 && I <= 6
 	db STRBYTE(#M_SCARF0,  0)
-	db T_SCARF + 2
 ELSE
 	db STRBYTE(#M_SCARF0,  3)
-	db T_SCARF
 ENDC
 
 	db STRBYTE(#M_EYE,     I) * 2 + T_EYE
@@ -49,5 +47,5 @@ ENDC
 	db Y_CHAIN_LEFT_{d:I}
 	db Y_CHAIN_RIGHT_{d:I}
 
-	ds 1
+	ds 2
 ENDR
