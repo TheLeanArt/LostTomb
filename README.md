@@ -24,6 +24,10 @@ All the differences from the animated GIF (that we're aware of):
 * **Music:** [Yogi (Tronimal)](https://yogi-tronimal.itch.io/)
 * **Code:** [Lean Art](https://leanart.itch.io/)
 
+## Thanks
+
+[calc84maniac](https://github.com/calc84maniac/) for some mad optimisations
+
 ## Licenses
 
 * **Code:** MIT
