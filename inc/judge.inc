@@ -12,16 +12,43 @@ DEF O_EYE_LEFT     EQU   0
 DEF Y_EYE          EQU  49
 DEF X_EYE_LEFT     EQU 136
 
-DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.nose - JudgeObj8Tiles)) / 4"
-DEF O_NOSE         EQU O_EYE_LEFT    + 1
-
-DEF O_EYE_RIGHT    EQU O_NOSE        + 1
+DEF O_EYE_RIGHT    EQU O_EYE_LEFT    + 1
 DEF X_EYE_RIGHT    EQU 149
 
+DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.nose - JudgeObj16Tiles) / 2) / 4"
+DEF O_NOSE         EQU O_EYE_RIGHT   + 1
+DEF Y_NOSE         EQU  48
+DEF X_NOSE         EQU 144
+
+FOR I, 8
+IF I == 5
+	DEF T_NOSE_{d:I}  EQUS "T_NOSE + 2"
+ELSE
+	DEF T_NOSE_{d:I}  EQUS "T_NOSE"
+ENDC
+ENDR
+
 DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
-DEF O_MOUTH        EQU O_EYE_RIGHT   + 1
+DEF O_MOUTH        EQU O_NOSE        + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
+
+IF !DEF (JUDGE_CART)
+	DEF JUDGE_CART    EQU 0
+ENDC
+
+DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
+DEF O_CART         EQU  O_MOUTH      + 1
+DEF Y_CART         EQU  80
+DEF X_CART         EQU 142
+
+FOR I, 8
+IF I >= 4 && I <= 6
+	DEF T_MOUTH_{d:I} EQUS "T_MOUTH"
+ELSE
+	DEF T_MOUTH_{d:I} EQUS "T_MOUTH + 2"
+ENDC
+ENDR
 
 DEF T_CHAIN        EQU $00
 DEF T_SCALE_CONF   EQU T_CHAIN       + 2
@@ -34,7 +61,7 @@ DEF T_PLATE        EQU T_PLATE_LEFT2 + 2
 
 DEF T_SOUL         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
 
-DEF O_SOUL         EQU O_MOUTH + 1
+DEF O_SOUL         EQU O_CART + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
 DEF X_SOUL         EQU  28
@@ -93,9 +120,13 @@ DEF O_CHAIN_RIGHT  EQU O_CHAIN_RIGHT2 + H_CHAIN_RIGHT2
 DEF O_STRING_RIGHT EQU O_CHAIN_RIGHT  + H_CHAIN_RIGHT
 DEF O_PLATE_RIGHT  EQU O_STRING_RIGHT + 4
 
+DEF T_WAVE         EQU $17
+DEF MAP_WAVE       EQU TILEMAP0
 DEF ROW_WAVE       EQU  14
 DEF COL_WAVE       EQU   0
 
+DEF T_BUBBLE       EQU $1F
+DEF MAP_BUBBLE     EQU TILEMAP0
 DEF ROW_BUBBLE     EQU  15
 DEF COL_BUBBLE0    EQU   0
 DEF COL_BUBBLE1    EQU   6

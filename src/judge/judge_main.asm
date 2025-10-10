@@ -53,8 +53,8 @@ ENDC
 	ld a, e
 	and $38
 	add a
-	ld b, a
 	swap a
+	ld l, a
 
 ; Optimized by calc84maniac
 .health
@@ -74,31 +74,20 @@ ENDC
 	bit 2, l
 	jr z, .healthLoop
 
-	ld l, b
+.wave
+	call UpdateWaveAndBubble
+
+	swap l
 	ld h, HIGH(JudgeLUT) >> 1
 	add hl, hl
-	call SetPawAndFin
 
-	ld a, [hli]
-	ld c, LOW(ROW_WAVE * TILEMAP_WIDTH + COL_WAVE)
-.waveLoop
-	ld [bc], a
-	inc c
-	bit TZCOUNT(TILEMAP_WIDTH), c
-	jr z, .waveLoop
-
-	ld a, [hli]
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE1)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE2)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE3)
-	ld [bc], a
-
+.cat
 	ld a, [hli]
 	ld c, LOW(ROW_CAT * TILEMAP_WIDTH + COL_CAT)
 	ld [bc], a
+
+.fin
+	call UpdateFinAndPaw
 
 .eyes
 	ld a, [hli]
@@ -116,6 +105,13 @@ ENDC
 	ld a, [hli]
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
+
+IF JUDGE_CART
+	rrca                          ; Divide A by 2
+	add Y_CART - T_MOUTH / 2 - 1 ; Adjust cart's Y coordinate
+	ld c, O_CART * OBJ_SIZE + OAMA_Y
+	ld [bc], a                    ; Set Y
+ENDC
 
 .scales
 	ld c, l
@@ -161,22 +157,51 @@ ENDC
 .loopDone
 	pop de
 	inc e
-	jp .loop
+	jr .loop
 
 
-SECTION "SetPawAndFin", ROM0
-SetPawAndFin:
+SECTION "UpdateWaveAndBubble", ROM0
+UpdateWaveAndBubble:
+.wave
+	ld a, l
+	bit 7, e
+	jr z, .cont
+	cpl
+.cont
+	and $07
+	add T_WAVE
+	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
+.loop
+	ld [bc], a
+	inc c
+	bit TZCOUNT(TILEMAP_WIDTH), c
+	jr z, .loop
 
-FOR Y, ROW_PAW, ROW_PAW + H_PAW
-IF Y == ROW_PAW
-	ld bc, MAP_PAW + ROW_PAW * TILEMAP_WIDTH + COL_PAW
-ELSE
-	ld c, Y * TILEMAP_WIDTH + COL_PAW
-ENDC
+.bubble
+	ld a, l
+	add T_BUBBLE
+	ld [bc], a
+	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE1)
+	ld [bc], a
+	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE2)
+	ld [bc], a
+	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE3)
+	ld [bc], a
+	ret
+
+
+SECTION "UpdateFinAndPaw", ROM0
+UpdateFinAndPaw:
+.fin
+	ld c, LOW(ROW_FIN * TILEMAP_WIDTH + COL_FIN)
 	call CopyFour
-ENDR
 
-	ld bc, MAP_FIN + ROW_FIN * TILEMAP_WIDTH + COL_FIN
+.paw
+	ld bc, MAP_PAW + ROW_PAW * TILEMAP_WIDTH + COL_PAW
+	call CopyFour
+	ld c, (ROW_PAW + 1) * TILEMAP_WIDTH + COL_PAW
+	call CopyFour
+	ld c, (ROW_PAW + 2) * TILEMAP_WIDTH + COL_PAW
 	; Fall through
 
 CopyFour:
