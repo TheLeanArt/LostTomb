@@ -110,9 +110,9 @@ ENDC
 	ld [bc], a                    ; Set Y
 
 .ears
-	swap e                        ; Divide A by 16
 	ld a, e                       ; Load the value in E into A
-	rrca                          ; Divide A by 2
+	rlca                          ; Divide A by 2
+	rlca                          ; Divide A by 2
 	and 1                         ; Isolate bit 0
 	add X_EAR_LEFT                ; Adjust left ear's X coordinate
 	ld c, O_EAR_LEFT * OBJ_SIZE + OAMA_X
@@ -217,7 +217,8 @@ UpdateSoul:
 .left
 	ld [hli], a                ; Set Y and advance to X
 	ld d, a                    ; Store Y in D
-	ld a, e                    ; Load the step counter / 16
+	ld a, e                    ; Load the step counter
+	swap a                     ; Divide A by 16
 	and OAM_XFLIP >> 2         ; Isolate bit 3
 	ld e, a                    ; Store the flip indicator in E
 	call .rest                 ; Update the rest of the left object
