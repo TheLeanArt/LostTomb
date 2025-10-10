@@ -104,8 +104,7 @@ ENDC
 
 .beard
 	rrca                          ; Divide A by 2
-	cpl                           ; Negate
-	add Y_BEARD + T_MOUTH / 2 + 1 ; Adjust beard's Y coordinate
+	add Y_BEARD - T_MOUTH / 2 - 1 ; Adjust beard's Y coordinate
 	ld c, O_BEARD * OBJ_SIZE + OAMA_Y
 	ld [bc], a                    ; Set Y
 

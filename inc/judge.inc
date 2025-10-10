@@ -12,14 +12,24 @@ DEF O_EYE_LEFT     EQU   0
 DEF Y_EYE          EQU  49
 DEF X_EYE_LEFT     EQU 136
 
-DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.nose - JudgeObj8Tiles)) / 4"
-DEF O_NOSE         EQU O_EYE_LEFT    + 1
-
-DEF O_EYE_RIGHT    EQU O_NOSE        + 1
+DEF O_EYE_RIGHT    EQU O_EYE_LEFT    + 1
 DEF X_EYE_RIGHT    EQU 149
 
+DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.nose - JudgeObj16Tiles) / 2) / 4"
+DEF O_NOSE         EQU O_EYE_RIGHT   + 1
+DEF Y_NOSE         EQU  48
+DEF X_NOSE         EQU 144
+
+FOR I, 8
+IF I == 5
+	DEF T_NOSE_{d:I}  EQUS "T_NOSE + 2"
+ELSE
+	DEF T_NOSE_{d:I}  EQUS "T_NOSE"
+ENDC
+ENDR
+
 DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
-DEF O_MOUTH        EQU O_EYE_RIGHT   + 1
+DEF O_MOUTH        EQU O_NOSE        + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
 
@@ -27,6 +37,14 @@ DEF T_BEARD        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeOb
 DEF O_BEARD        EQU  O_MOUTH      + 1
 DEF Y_BEARD        EQU  80
 DEF X_BEARD        EQU 142
+
+FOR I, 8
+IF I >= 4 && I <= 6
+	DEF T_MOUTH_{d:I} EQUS "T_MOUTH"
+ELSE
+	DEF T_MOUTH_{d:I} EQUS "T_MOUTH + 2"
+ENDC
+ENDR
 
 DEF T_CHAIN        EQU $00
 DEF T_SCALE_CONF   EQU T_CHAIN       + 2
