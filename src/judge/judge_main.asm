@@ -28,6 +28,8 @@ JudgeMain:
 	ldh [rIF], a
 	ei
 
+IF JUDGE_MUSIC
+
 	dec a                        ; A is zero from previous operations
 	ldh [rNR52], a               ; Enable all channels
 IF !MUSIC_STEREO
@@ -40,6 +42,8 @@ ENDC
 
 	ld a, MUSIC_DELAY
 	ldh [hDelay], a
+
+ENDC
 
 	ld e, 0
 .loop
@@ -157,6 +161,9 @@ ENDC
 	ldh [rWY], a
 
 .loopCont
+
+IF JUDGE_MUSIC
+
 	ldh a, [hDelay]
 	or a
 	jr z, .doSound
@@ -166,6 +173,8 @@ ENDC
 
 .doSound
 	call hUGE_dosound
+
+ENDC
 
 .loopDone
 	pop de
@@ -275,6 +284,10 @@ UpdateSoul:
 	ret
 
 
+IF JUDGE_MUSIC
+
 SECTION "Judgment Delay", HRAM
 hDelay:
 	ds 1
+
+ENDC
