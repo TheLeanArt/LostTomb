@@ -36,6 +36,7 @@ JUDGE_1BPP = \
 	art/judge/judge_eye.1bpp \
 	art/judge/judge_nose.1bpp \
 	art/judge/judge_mouth.1bpp \
+	art/judge/judge_scarf.1bpp \
 	art/judge/judge_chain.1bpp \
 	art/judge/judge_scales.1bpp \
 	art/judge/judge_soul.1bpp \
@@ -94,9 +95,6 @@ src/oamdma.o: src/oamdma.asm $(INC)
 src/%.o: src/%.asm $(INC)
 	$(RGBASM) $(RGBASMFLAGS) $< -o $@
 
-art/judge/judge_chain.1bpp: art/judge/judge_chain.png
-	$(RGBGFX) -Z -d1 $< -o $@
-
 art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png
 	$(RGBGFX) -Z -d1 -T $< -o $@
 
@@ -140,7 +138,7 @@ art/judge/judge_top_right.2bpp: art/judge/judge_top_right.png art/judge/judge_to
 	$(RGBGFX) -d2 $< -o $@ -c gbc:art/judge/judge_top.pal
 
 art/%.1bpp: art/%.png
-	$(RGBGFX) -d1 $< -o $@
+	$(RGBGFX) -Z -d1 $< -o $@
 
 art/%.2bpp: art/%.png
 	$(RGBGFX) -d2 $< -o $@

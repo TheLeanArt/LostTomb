@@ -18,8 +18,16 @@ DEF O_NOSE         EQU O_EYE_LEFT    + 1
 DEF O_EYE_RIGHT    EQU O_NOSE        + 1
 DEF X_EYE_RIGHT    EQU 149
 
+DEF T_SCARF        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.scarf - JudgeObj16Tiles) / 2) / 4"
+DEF O_SCARF_RIGHT  EQU O_EYE_RIGHT  + 1
+DEF X_SCARF_RIGHT  EQU 149
+
+DEF O_SCARF_LEFT   EQU O_SCARF_RIGHT + 1
+DEF Y_SCARF        EQU  80
+DEF X_SCARF_LEFT   EQU 136
+
 DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
-DEF O_MOUTH        EQU O_EYE_RIGHT   + 1
+DEF O_MOUTH        EQU O_SCARF_LEFT   + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
 
@@ -34,7 +42,7 @@ DEF T_PLATE        EQU T_PLATE_LEFT2 + 2
 
 DEF T_SOUL         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
 
-DEF O_SOUL         EQU O_MOUTH + 1
+DEF O_SOUL         EQU O_MOUTH       + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
 DEF X_SOUL         EQU  28

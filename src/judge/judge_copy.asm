@@ -145,6 +145,8 @@ JudgeObj16Tiles::
 	INCBIN "judge_soul.1bpp"
 .feather::
 	INCBIN "judge_feather.1bpp"
+.scarf::
+	INCBIN "judge_scarf.1bpp"
 .end::
 
 JudgeBack2Tiles::
