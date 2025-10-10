@@ -19,10 +19,14 @@ JudgeLUT::
 FOR I, 8
 	db STRBYTE(#M_CAT,     I)
 
+IF JUDGE_SCARF
 IF I >= 4 && I <= 6
 	db STRBYTE(#M_SCARF0, 0)
 ELSE
 	db STRBYTE(#M_SCARF0, 3)
+ENDC
+ELSE
+	db STRBYTE(#M_SCARF0, 0)
 ENDC
 
 	INCBIN "judge_fin.tilemap", I * W_FIN, W_FIN

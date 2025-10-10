@@ -15,10 +15,19 @@ DEF X_EYE_LEFT     EQU 136
 DEF O_EYE_RIGHT    EQU O_EYE_LEFT    + 1
 DEF X_EYE_RIGHT    EQU 149
 
+IF !DEF(JUDGE_SCARF)
+	DEF JUDGE_SCARF   EQU 0
+ENDC
+
 DEF T_SCARF        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.scarf - JudgeObj16Tiles) / 2) / 4"
 DEF O_SCARF_RIGHT  EQU O_EYE_RIGHT  + 1
 DEF X_SCARF_RIGHT  EQU 149
-DEF T_SCARF_0      EQUS "T_SCARF + 2"
+
+IF JUDGE_SCARF
+	DEF T_SCARF_0      EQUS "T_SCARF + 2"
+ELSE
+	DEF T_SCARF_0      EQUS "T_SCARF"
+ENDC
 
 DEF O_SCARF_LEFT   EQU O_SCARF_RIGHT + 1
 DEF Y_SCARF        EQU  80
@@ -56,7 +65,11 @@ ENDC
 
 DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
 DEF O_CART         EQU  O_MOUTH      + 1
-DEF Y_CART         EQU  80
+IF JUDGE_CART && JUDGE_SCARF
+	DEF Y_CART         EQU  81
+ELSE
+	DEF Y_CART         EQU  80
+ENDC
 DEF X_CART         EQU 142
 
 DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"

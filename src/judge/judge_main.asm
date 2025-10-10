@@ -129,16 +129,21 @@ ENDR
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
-.scarf
+IF JUDGE_SCARF
 	add T_SCARF - T_MOUTH
 	ld c, O_SCARF_RIGHT * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 	ld c, O_SCARF_LEFT * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
+ENDC
 
 IF JUDGE_CART
 	rrca                          ; Divide A by 2
+IF JUDGE_SCARF
 	add Y_CART - T_SCARF / 2 - 1 ; Adjust cart's Y coordinate
+ELSE
+	add Y_CART - T_MOUTH / 2 - 1 ; Adjust cart's Y coordinate
+ENDC
 	ld c, O_CART * OBJ_SIZE + OAMA_Y
 	ld [bc], a                    ; Set Y
 ENDC
