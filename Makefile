@@ -37,6 +37,7 @@ JUDGE_1BPP = \
 	art/judge/judge_nose.1bpp \
 	art/judge/judge_mouth.1bpp \
 	art/judge/judge_scarf.1bpp \
+	art/judge/judge_scarf_tip.1bpp \
 	art/judge/judge_chain.1bpp \
 	art/judge/judge_scales.1bpp \
 	art/judge/judge_soul.1bpp \
@@ -57,6 +58,7 @@ JUDGE_MAIN_MAPS = \
 	art/judge/judge_eye.tilemap \
 	art/judge/judge_nose.tilemap \
 	art/judge/judge_mouth.tilemap \
+	art/judge/judge_scarf_tip.tilemap \
 	art/judge/judge_soul.tilemap \
 	art/judge/judge_feather.tilemap \
 	art/judge/judge_cat.tilemap \
@@ -122,8 +124,11 @@ art/judge/judge_wave.1bpp art/judge/judge_wave.tilemap: art/judge/judge_wave.png
 art/judge/judge_bubble.1bpp art/judge/judge_bubble.tilemap: art/judge/judge_bubble.png art/judge/judge_wave.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_wave.1bpp
 
-art/judge/judge_paw.1bpp art/judge/judge_paw.tilemap: art/judge/judge_paw.png art/judge/judge_bubble.1bpp
+art/judge/judge_scarf_tip.1bpp art/judge/judge_scarf_tip.tilemap: art/judge/judge_scarf_tip.png art/judge/judge_bubble.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_bubble.1bpp
+
+art/judge/judge_paw.1bpp art/judge/judge_paw.tilemap: art/judge/judge_paw.png art/judge/judge_scarf_tip.1bpp
+	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_scarf_tip.1bpp
 
 art/judge/judge_fin.1bpp art/judge/judge_fin.tilemap: art/judge/judge_fin.png art/judge/judge_paw.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_paw.1bpp
