@@ -27,6 +27,9 @@ InitJudgeObjects:
 	ld b, T_MOUTH_0
 	ld de, Y_MOUTH << 8 | X_MOUTH
 	call SetObject
+	ld b, T_CART
+	ld d, Y_CART
+	call SetObject
 
 .soul
 	ld bc, T_SOUL << 8

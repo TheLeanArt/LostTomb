@@ -93,6 +93,13 @@ ENDC
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
+IF JUDGE_CART
+	rrca                          ; Divide A by 2
+	add Y_CART - T_MOUTH / 2 - 1 ; Adjust cart's Y coordinate
+	ld c, O_CART * OBJ_SIZE + OAMA_Y
+	ld [bc], a                    ; Set Y
+ENDC
+
 .scales
 	ld c, l
 	ld b, h
