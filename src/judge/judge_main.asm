@@ -84,6 +84,23 @@ ENDC
 	ld a, [hli]
 	ld c, LOW(ROW_CAT * TILEMAP_WIDTH + COL_CAT)
 	ld [bc], a
+	
+	ld a, [hli]
+	inc c
+	ld [bc], a
+	inc a
+	inc c
+	ld [bc], a
+	inc a
+	inc c
+	ld [bc], a
+
+.scarf
+	ld a, [hli]
+	ld bc, wShadowOAM + O_SCARF_RIGHT * OBJ_SIZE + OAMA_TILEID
+	ld [bc], a
+	ld c, O_SCARF_LEFT * OBJ_SIZE + OAMA_TILEID
+	ld [bc], a
 
 .eyes
 	ld a, [hli]
@@ -153,7 +170,7 @@ ENDC
 .loopDone
 	pop de
 	inc e
-	jr .loop
+	jp .loop
 
 
 SECTION "SetPawAndFin", ROM0

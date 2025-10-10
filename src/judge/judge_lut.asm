@@ -15,6 +15,7 @@ DEF M_NOSE    EQUS READFILE("judge_nose.tilemap")
 DEF M_MOUTH   EQUS READFILE("judge_mouth.tilemap")
 DEF M_SOUL    EQUS READFILE("judge_soul.tilemap")
 DEF M_FEATHER EQUS READFILE("judge_feather.tilemap")
+DEF M_SCARF0  EQUS READFILE("judge_scarf_tip.tilemap")
 
 SECTION "JudgeLUT", ROMX, ALIGN[9]
 JudgeLUT::
@@ -25,6 +26,14 @@ FOR I, 8
 	db STRBYTE(#M_WAVE,    I)
 	db STRBYTE(#M_BUBBLE,  I)
 	db STRBYTE(#M_CAT,     I)
+
+IF I >= 4 && I <= 6
+	db STRBYTE(#M_SCARF0,  0)
+	db T_SCARF + 2
+ELSE
+	db STRBYTE(#M_SCARF0,  3)
+	db T_SCARF
+ENDC
 
 	db STRBYTE(#M_EYE,     I) * 2 + T_EYE
 	db STRBYTE(#M_NOSE,    I) * 2 + T_NOSE
@@ -40,5 +49,5 @@ FOR I, 8
 	db Y_CHAIN_LEFT_{d:I}
 	db Y_CHAIN_RIGHT_{d:I}
 
-	ds 3
+	ds 1
 ENDR
