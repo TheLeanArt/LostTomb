@@ -53,13 +53,29 @@ ENDC
 	ld a, e
 	and $38
 	add a
-	ld l, a
+	ld b, a
 	swap a
 
-	and $02
-	add T_HEALTH_FULL
-	ld [MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH], a
+.health
+	sub MAX_HEALTH + 1
+	rra
+	ld d, a
+	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
+	ld a, T_HEALTH_FULL
+.healthLoop
+	inc d
+	jr nz, .healthCont
+	ASSERT T_HEALTH_EMPTY == T_HEALTH_FULL - 2
+	ASSERT T_HEALTH_HALF == T_HEALTH_FULL - 1
+	adc -2					   ; T_HEALTH_EMPTY or T_HEALTH_HALF
+.healthCont
+	ld [hl+], a
+	ASSERT (T_HEALTH_HALF & 1) == 1
+	res 0, a				   ; Change T_HEALTH_HALF to T_HEALTH_EMPTY
+	bit 2, l
+	jr z, .healthLoop
 
+	ld l, b
 	ld h, HIGH(JudgeLUT) >> 1
 	add hl, hl
 	call SetPawAndFin
@@ -146,7 +162,7 @@ ENDC
 .loopDone
 	pop de
 	inc e
-	jr .loop
+	jp .loop
 
 
 SECTION "SetPawAndFin", ROM0
