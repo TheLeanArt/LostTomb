@@ -32,6 +32,7 @@ JUDGE_INC = \
 
 JUDGE_1BPP = \
 	art/judge/blank.1bpp \
+	art/judge/judge_health.1bpp \
 	art/judge/judge_status.1bpp \
 	art/judge/judge_eye.1bpp \
 	art/judge/judge_nose.1bpp \
