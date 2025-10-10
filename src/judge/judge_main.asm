@@ -54,10 +54,20 @@ ENDC
 	and $38
 	add a
 	swap a
-	ld l, a
+	ld b, a
+
+IF JUDGE_HEALTH < 2
+
+	and 1 << JUDGE_HEALTH
+REPT JUDGE_HEALTH
+	rrca
+ENDR
+	add T_HEALTH_HALF
+	ld [MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH], a
+
+ELSE
 
 ; Optimized by calc84maniac
-.health
 	cpl
 	add MAX_HEALTH + 1
 	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
@@ -74,7 +84,10 @@ ENDC
 	bit 2, l
 	jr z, .healthLoop
 
+ENDC
+
 .wave
+	ld l, b
 	call UpdateWaveAndBubble
 
 	swap l
