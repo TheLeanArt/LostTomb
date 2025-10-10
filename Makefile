@@ -92,9 +92,6 @@ src/oamdma.o: src/oamdma.asm $(INC)
 src/%.o: src/%.asm $(INC)
 	$(RGBASM) $(RGBASMFLAGS) $< -o $@
 
-art/judge/judge_chain.1bpp: art/judge/judge_chain.png
-	$(RGBGFX) -Z -d1 $< -o $@
-
 art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png
 	$(RGBGFX) -Z -d1 -T $< -o $@
 
@@ -103,12 +100,6 @@ art/judge/judge_feather.1bpp art/judge/judge_feather.tilemap: art/judge/judge_fe
 
 art/judge/judge_eye.1bpp art/judge/judge_eye.tilemap: art/judge/judge_eye.png
 	$(RGBGFX) -u -d1 -T $< -o $@
-
-art/judge/judge_nose.1bpp: art/judge/judge_nose.png
-	$(RGBGFX) -Z -d1 $< -o $@
-
-art/judge/judge_mouth.1bpp: art/judge/judge_mouth.png
-	$(RGBGFX) -Z -d1 $< -o $@
 
 art/judge/judge_status.1bpp art/judge/judge_status.tilemap: art/judge/judge_status.png art/judge/judge_health.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_health.1bpp
@@ -137,8 +128,8 @@ art/judge/judge_top_left.2bpp art/judge/judge_top.pal: art/judge/judge_top_left.
 art/judge/judge_top_right.2bpp: art/judge/judge_top_right.png art/judge/judge_top.pal
 	$(RGBGFX) -d2 $< -o $@ -c gbc:art/judge/judge_top.pal
 
-art/%.1bpp: art/%.png
-	$(RGBGFX) -d1 $< -o $@
+art/judge/%.1bpp: art/judge/%.png
+	$(RGBGFX) -Z -d1 $< -o $@
 
 art/%.2bpp: art/%.png
 	$(RGBGFX) -d2 $< -o $@
