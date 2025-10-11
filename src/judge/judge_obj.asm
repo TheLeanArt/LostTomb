@@ -30,6 +30,12 @@ InitJudgeObjects:
 	ld b, T_CART
 	ld d, Y_CART
 	call SetObject
+	ld b, T_EAR_LEFT
+	ld de, Y_EAR_LEFT << 8 | X_EAR_LEFT
+	call SetObject
+	ld b, T_EAR_RIGHT
+	ld de, Y_EAR_RIGHT << 8 | X_EAR_RIGHT
+	call SetObject
 
 .soul
 	ld bc, T_SOUL << 8

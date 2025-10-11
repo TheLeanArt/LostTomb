@@ -52,7 +52,7 @@ ENDC
 
 	ld a, e
 	and $07
-	jr nz, .loopCont
+	jp nz, .loopCont
 
 	ld a, e
 	and $38
@@ -91,7 +91,35 @@ ELSE
 ENDC
 
 .wave
-	call UpdateWaveAndBubble
+	ld a, d
+	bit 7, e
+	jr z, .waveCont
+	cpl
+.waveCont
+	and $07
+	add T_WAVE
+	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
+.waveLoop
+	ld [bc], a
+	inc c
+	bit TZCOUNT(TILEMAP_WIDTH), c
+	jr z, .waveLoop
+
+.bubble:
+	ld h, HIGH(Bubbles)        ; Load upper source address byte
+	ld a, e                    ; Load the step counter
+	rlca                       ; Divide by 64
+	rlca                       ; ...
+	and $03                    ; Isolate bits 0 and 1
+	ld l, a                    ; Load lower source address byte
+	ld c, [hl]                 ; Load lower destination address byte
+	inc l                      ; Advance to the current bubble
+	xor a                      ; Set A to 0
+	ld [bc], a                 ; Clear the previous bubble
+	ld c, [hl]                 ; Load lower destination address byte
+	ld a, d                    ; Load the current step
+	add T_BUBBLE               ; Add base tile ID
+	ld [bc], a                 ; Set the current bubble
 
 	ld l, d
 	swap l
@@ -125,7 +153,7 @@ ENDC
 	ld a, e
 	and $C0
 	ld a, [hli]
-	jr nz, .scales
+	jr nz, .cartDone
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
@@ -135,6 +163,21 @@ IF JUDGE_CART
 	ld c, O_CART * OBJ_SIZE + OAMA_Y
 	ld [bc], a                    ; Set Y
 ENDC
+.cartDone
+
+.ears
+	ld a, e                       ; Load the value in E into A
+	rlca                          ; Divide A by 2
+	and 1                         ; Isolate bit 0
+
+	add X_EAR_RIGHT               ; Adjust right ear's X coordinate
+	ld c, O_EAR_RIGHT * OBJ_SIZE + OAMA_X
+	ld [bc], a                    ; Set X
+
+	cpl                           ; Negate
+	add LOW(X_EAR_RIGHT + X_EAR_LEFT + 1)
+	ld c, O_EAR_LEFT * OBJ_SIZE + OAMA_X
+	ld [bc], a                    ; Set X
 
 .scales
 	ld c, l
@@ -185,50 +228,7 @@ ENDC
 .loopDone
 	pop de
 	inc e
-	jr .loop
-
-
-SECTION "UpdateWaveAndBubble", ROM0
-UpdateWaveAndBubble:
-.wave
-	ld a, d
-	bit 7, e
-	jr z, .cont
-	cpl
-.cont
-	and $07
-	add T_WAVE
-	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
-.loop
-	ld [bc], a
-	inc c
-	bit TZCOUNT(TILEMAP_WIDTH), c
-	jr z, .loop
-
-.bubble:
-	ld h, HIGH(Bubbles)        ; Load upper source address byte
-	ld a, e                    ; Load the step counter
-	rlca                       ; Divide by 64
-	rlca                       ; ...
-	and $03                    ; Isolate bits 0 and 1
-	ld l, a                    ; Load lower source address byte
-	ld c, [hl]                 ; Load lower destination address byte
-	inc l                      ; Advance to the current bubble
-	xor a                      ; Set A to 0
-	ld [bc], a                 ; Clear the previous bubble
-	ld c, [hl]                 ; Load lower destination address byte
-	ld a, d                    ; Load the current step
-	add T_BUBBLE               ; Add base tile ID
-	ld [bc], a                 ; Set the current bubble
-	ret
-
-
-SECTION "Judge Bubbles", ROMX, ALIGN[8]
-Bubbles:
-FOR I, BUBBLE_COUNT
-	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE{d:I})
-ENDR
-	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE0)
+	jp .loop
 
 
 SECTION "UpdateFinAndPaw", ROM0
@@ -278,8 +278,8 @@ UpdateSoul:
 	ld [hli], a                ; Set Y and advance to X
 	ld d, a                    ; Store Y in D
 	ld a, e                    ; Load the step counter
-	and OAM_XFLIP << 2         ; Isolate bit 7
-	swap a                     ; Move to bit 3
+	swap a                     ; Divide A by 16
+	and OAM_XFLIP >> 2         ; Isolate bit 3
 	ld e, a                    ; Store the flip indicator in E
 	call .rest                 ; Update the rest of the left object
 
@@ -301,6 +301,14 @@ UpdateSoul:
 	add a                      ; ...
 	ld [hli], a                ; Set attributes and advance to the next object
 	ret
+
+
+SECTION "Judge Bubbles", ROMX, ALIGN[8]
+Bubbles:
+FOR I, BUBBLE_COUNT
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE{d:I})
+ENDR
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE0)
 
 
 IF JUDGE_MUSIC

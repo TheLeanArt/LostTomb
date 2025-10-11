@@ -147,6 +147,10 @@ JudgeObj16Tiles::
 	INCBIN "judge_feather.1bpp"
 .cart::
 	INCBIN "judge_cart.1bpp"
+.earLeft::
+	INCBIN "judge_ear_left.1bpp"
+.earRight::
+	INCBIN "judge_ear_right.1bpp"
 .end::
 
 JudgeBack2Tiles::

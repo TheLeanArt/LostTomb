@@ -38,6 +38,8 @@ JUDGE_1BPP = \
 	art/judge/judge_nose.1bpp \
 	art/judge/judge_mouth.1bpp \
 	art/judge/judge_cart.1bpp \
+	art/judge/judge_ear_left.1bpp \
+	art/judge/judge_ear_right.1bpp \
 	art/judge/judge_chain.1bpp \
 	art/judge/judge_scales.1bpp \
 	art/judge/judge_soul.1bpp \

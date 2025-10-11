@@ -42,15 +42,6 @@ DEF O_MOUTH        EQU O_NOSE        + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
 
-IF !DEF (JUDGE_CART)
-	DEF JUDGE_CART    EQU 0
-ENDC
-
-DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
-DEF O_CART         EQU  O_MOUTH      + 1
-DEF Y_CART         EQU  80
-DEF X_CART         EQU 142
-
 DEF T_MOUTH_OPEN   EQUS "T_MOUTH + 2"
 DEF T_MOUTH_CLOSED EQUS "T_MOUTH"
 DEF T_MOUTH_0      EQUS "T_MOUTH_OPEN"
@@ -62,6 +53,25 @@ DEF T_MOUTH_5      EQUS "T_MOUTH_CLOSED"
 DEF T_MOUTH_6      EQUS "T_MOUTH_OPEN"
 DEF T_MOUTH_7      EQUS "T_MOUTH_CLOSED"
 
+IF !DEF (JUDGE_CART)
+	DEF JUDGE_CART    EQU 0
+ENDC
+
+DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
+DEF O_CART         EQU  O_MOUTH      + 1
+DEF Y_CART         EQU  80
+DEF X_CART         EQU 142
+
+DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
+DEF O_EAR_LEFT     EQU O_CART        + 1
+DEF Y_EAR_LEFT     EQU 27
+DEF X_EAR_LEFT     EQU 129
+
+DEF T_EAR_RIGHT    EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
+DEF O_EAR_RIGHT    EQU O_EAR_LEFT    + 1
+DEF Y_EAR_RIGHT    EQU 25
+DEF X_EAR_RIGHT    EQU 157
+
 DEF T_CHAIN        EQU $00
 DEF T_SCALE_CONF   EQU T_CHAIN       + 2
 DEF T_STRING2      EQU T_SCALE_CONF  + 2
@@ -72,8 +82,7 @@ DEF T_PLATE_LEFT2  EQU T_PLATE_LEFT1 + 2
 DEF T_PLATE        EQU T_PLATE_LEFT2 + 2
 
 DEF T_SOUL         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
-
-DEF O_SOUL         EQU O_CART + 1
+DEF O_SOUL         EQU O_EAR_RIGHT   + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
 DEF X_SOUL         EQU  28
