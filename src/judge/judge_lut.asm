@@ -8,31 +8,19 @@ include "judge.inc"
 
 
 DEF M_CAT     EQUS READFILE("judge_cat.tilemap")
-DEF M_EYE     EQUS READFILE("judge_eye.tilemap")
 DEF M_SOUL    EQUS READFILE("judge_soul.tilemap")
 DEF M_FEATHER EQUS READFILE("judge_feather.tilemap")
-DEF M_SCARF0  EQUS READFILE("judge_scarf_tip.tilemap")
 
 SECTION "JudgeLUT", ROMX, ALIGN[9]
 JudgeLUT::
 
 FOR I, 8
-	db STRBYTE(#M_CAT,     I)
-
-IF JUDGE_SCARF
-IF I >= 4 && I <= 6
-	db STRBYTE(#M_SCARF0, 0)
-ELSE
-	db STRBYTE(#M_SCARF0, 3)
-ENDC
-ELSE
-	db STRBYTE(#M_SCARF0, 0)
-ENDC
-
 	INCBIN "judge_fin.tilemap", I * W_FIN, W_FIN
 	INCBIN "judge_paw.tilemap", I * H_PAW * W_PAW, H_PAW * W_PAW
 
-	db STRBYTE(#M_EYE,     I) * 2 + T_EYE
+	db STRBYTE(#M_CAT,     I)
+
+	db T_EYE_{d:I}
 	db T_NOSE_{d:I}
 	db T_MOUTH_{d:I}
 
@@ -46,5 +34,5 @@ ENDC
 	db Y_CHAIN_LEFT_{d:I}
 	db Y_CHAIN_RIGHT_{d:I}
 
-	ds 4
+	ds 5
 ENDR

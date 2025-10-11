@@ -132,10 +132,10 @@ JudgeChainTiles::
 
 JudgeObj8Tiles::
 	INCBIN "judge_scales.1bpp"
-.eye::
-	INCBIN "judge_eye.1bpp"
 .mouth::
 	INCBIN "judge_mouth.1bpp"
+.eye::
+	INCBIN "judge_eye.1bpp"
 .end::
 
 JudgeObj16Tiles::
@@ -175,7 +175,12 @@ BackMap:
 	db T_TOP_LEFT1
 	INCBIN "judge_back.tilemap", ROW_TOP_LEFT * SCREEN_WIDTH + COL_TOP_LEFT + 1, SCREEN_WIDTH - 1
 	db T_TOP_LEFT2
-	INCBIN "judge_back.tilemap", (ROW_TOP_LEFT + 1) * SCREEN_WIDTH + COL_TOP_LEFT + 1
+	INCBIN "judge_back.tilemap", (ROW_TOP_LEFT + 1) * SCREEN_WIDTH + COL_TOP_LEFT + 1, ROW_CAT * SCREEN_WIDTH + COL_CAT - ((ROW_TOP_LEFT + 1) * SCREEN_WIDTH + COL_TOP_LEFT + 1)
+	db T_CAT
+FOR I, 3
+	db T_SCARF_TIP + I + JUDGE_SCARF * 3
+ENDR
+	INCBIN "judge_back.tilemap", ROW_CAT * SCREEN_WIDTH + COL_CAT + 4
 .end
 
 StatusMap:
