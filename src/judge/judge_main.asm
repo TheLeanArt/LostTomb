@@ -3,6 +3,7 @@
 ; Copyright (c) 2025 Dmitry Shechtman
 
 include "hardware.inc"
+include "common.inc"
 include "defs.inc"
 include "judge.inc"
 
@@ -30,12 +31,12 @@ JudgeMain:
 
 IF JUDGE_MUSIC
 
-	dec a                        ; A is zero from previous operations
-	ldh [rNR52], a               ; Enable all channels
+	dec a                      ; A is zero from previous operations
+	ldh [rNR52], a             ; Enable all channels
 IF !MUSIC_STEREO
-	ldh [rNR51], a               ; Play all channels on both speakers
+	ldh [rNR51], a             ; Play all channels on both speakers
 ENDC
-	ldh [rNR50], a               ; Set the volume to max
+	ldh [rNR50], a             ; Set the volume to max
 
 	ld hl, song_hideout
 	call hUGE_init
@@ -67,14 +68,14 @@ REPT JUDGE_HEALTH
 	rrca
 ENDR
 	add T_HEALTH_HALF
-	ld [MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH], a
+	ld [V_HEALTH], a
 
 ELIF JUDGE_HEALTH == 2
 
 	; Optimized by calc84maniac
 	cpl
 	add MAX_HEALTH + 1
-	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
+	ld hl, V_HEALTH
 .healthLoop
 	sub 2
 	ld b, T_HEALTH_FULL
@@ -94,7 +95,7 @@ ELSE
 	sub MAX_HEALTH + 1
 	rra
 	ld b, a
-	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
+	ld hl, V_HEALTH
 	ld a, T_HEALTH_FULL
 .healthLoop
 	inc b
@@ -116,7 +117,7 @@ ENDC
 .waveCont
 	and $07
 	add T_WAVE
-	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
+	ld bc, V_WAVE
 .waveLoop
 	ld [bc], a
 	inc c
@@ -139,15 +140,15 @@ ENDC
 	add T_BUBBLE               ; Add base tile ID
 	ld [bc], a                 ; Set the current bubble
 
+.cat
+	add T_CAT - T_BUBBLE
+	ld c, LOW(V_CAT)
+	ld [bc], a
+
 	ld l, d
 	swap l
 	ld h, HIGH(JudgeLUT) >> 1
 	add hl, hl
-
-.cat
-	ld a, [hli]
-	ld c, LOW(ROW_CAT * TILEMAP_WIDTH + COL_CAT)
-	ld [bc], a
 
 .fin
 	call UpdateFinAndPaw
@@ -252,11 +253,11 @@ ENDC
 SECTION "UpdateFinAndPaw", ROM0
 UpdateFinAndPaw:
 .fin
-	ld c, LOW(ROW_FIN * TILEMAP_WIDTH + COL_FIN)
+	ld c, LOW(V_FIN)
 	call CopyFour
 
 .paw
-	ld bc, MAP_PAW + ROW_PAW * TILEMAP_WIDTH + COL_PAW
+	ld bc, V_PAW
 	call CopyFour
 	ld c, (ROW_PAW + 1) * TILEMAP_WIDTH + COL_PAW
 	call CopyFour
@@ -324,9 +325,9 @@ UpdateSoul:
 SECTION "Judge Bubbles", ROMX, ALIGN[8]
 Bubbles:
 FOR I, BUBBLE_COUNT
-	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE{d:I})
+	db LOW(V_BUBBLE{d:I})
 ENDR
-	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE0)
+	db LOW(V_BUBBLE0)
 
 
 IF JUDGE_MUSIC

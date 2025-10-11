@@ -3,6 +3,7 @@
 ; Copyright (c) 2025 Dmitry Shechtman
 
 include "hardware.inc"
+include "common.inc"
 include "defs.inc"
 include "judge.inc"
 
