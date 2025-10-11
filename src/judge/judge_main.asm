@@ -69,22 +69,40 @@ ENDR
 	add T_HEALTH_HALF
 	ld [MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH], a
 
-ELSE
+ELIF JUDGE_HEALTH == 2
 
-; Optimized by calc84maniac
+	; Optimized by calc84maniac
 	cpl
 	add MAX_HEALTH + 1
 	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
 .healthLoop
 	sub 2
-	ld d, T_HEALTH_FULL
+	ld b, T_HEALTH_FULL
 	jr nc, .healthCont
-	add d                      ; T_HEALTH_EMPTY or T_HEALTH_HALF
-	ld d, a
+	add b                      ; T_HEALTH_EMPTY or T_HEALTH_HALF
+	ld b, a
 	xor a
 .healthCont
-	ld [hl], d
+	ld [hl], b
 	inc l
+	bit 2, l
+	jr z, .healthLoop
+
+ELSE
+
+	; Optimized by calc84maniac
+	sub MAX_HEALTH + 1
+	rra
+	ld b, a
+	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
+	ld a, T_HEALTH_FULL
+.healthLoop
+	inc b
+	jr nz, .healthCont
+	adc -2					   ; T_HEALTH_EMPTY or T_HEALTH_HALF
+.healthCont
+	ld [hli], a
+	res 0, a				   ; Change T_HEALTH_HALF to T_HEALTH_EMPTY
 	bit 2, l
 	jr z, .healthLoop
 
