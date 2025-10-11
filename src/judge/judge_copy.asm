@@ -17,9 +17,6 @@ ENDC
 	ldh [rBGP], a              ; Mask out the tile update
 
 	ld hl, STARTOF(VRAM)
-	ld de, JudgeChainTiles
-	COPY_1BPP_LONG_SAFE JudgeChain
-
 	ld de, JudgeObj8Tiles
 	COPY_1BPP_HALF_SAFE JudgeObj8
 	COPY_1BPP_LONG_SAFE JudgeObj16
@@ -113,11 +110,8 @@ CopyRow:
 
 
 SECTION "Judgment Tile Data", ROMX, ALIGN[8]
-JudgeChainTiles::
-	INCBIN "judge_chain.1bpp"
-.end::
-
 JudgeObj8Tiles::
+.string::
 	INCBIN "judge_scales.1bpp"
 .mouth::
 	INCBIN "judge_mouth.1bpp"
@@ -128,6 +122,8 @@ JudgeObj8Tiles::
 JudgeObj16Tiles::
 .nose::
 	INCBIN "judge_nose.1bpp"
+.chain::
+	INCBIN "judge_chain.1bpp"
 .soul::
 	INCBIN "judge_soul.1bpp"
 .feather::

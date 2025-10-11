@@ -7,7 +7,7 @@ DEF Y_WINDOW_INIT  EQU SCREEN_HEIGHT_PX
 DEF Y_WINDOW_FINAL EQU SCREEN_HEIGHT_PX - 8
 DEF X_WINDOW_INIT  EQU WX_OFS
 
-DEF T_EYE          EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.eye - JudgeObj8Tiles)) / 4"
+DEF T_EYE          EQUS "((JudgeObj8Tiles.eye - JudgeObj8Tiles)) / 4"
 DEF T_EYE_0        EQUS "T_EYE"
 DEF T_EYE_1        EQUS "T_EYE + 2"
 DEF T_EYE_2        EQUS "T_EYE + 4"
@@ -24,7 +24,7 @@ DEF X_EYE_LEFT     EQU 136
 DEF O_EYE_RIGHT    EQU O_EYE_LEFT    + 1
 DEF X_EYE_RIGHT    EQU 149
 
-DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.nose - JudgeObj16Tiles) / 2) / 4"
+DEF T_NOSE         EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.nose - JudgeObj16Tiles) / 2) / 4"
 DEF O_NOSE         EQU O_EYE_RIGHT   + 1
 DEF Y_NOSE         EQU  48
 DEF X_NOSE         EQU 144
@@ -37,7 +37,7 @@ ELSE
 ENDC
 ENDR
 
-DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
+DEF T_MOUTH        EQUS "((JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
 DEF O_MOUTH        EQU O_NOSE        + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
@@ -57,31 +57,32 @@ IF !DEF (JUDGE_CART)
 	DEF JUDGE_CART    EQU 0
 ENDC
 
-DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
+DEF T_CART         EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
 DEF O_CART         EQU  O_MOUTH      + 1
 DEF Y_CART         EQU  80
 DEF X_CART         EQU 142
 
-DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
+DEF T_EAR_LEFT     EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
 DEF O_EAR_LEFT     EQU O_CART        + 1
 DEF Y_EAR_LEFT     EQU 27
 DEF X_EAR_LEFT     EQU 129
 
-DEF T_EAR_RIGHT    EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
+DEF T_EAR_RIGHT    EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
 DEF O_EAR_RIGHT    EQU O_EAR_LEFT    + 1
 DEF Y_EAR_RIGHT    EQU 25
 DEF X_EAR_RIGHT    EQU 157
 
-DEF T_CHAIN        EQU $00
-DEF T_SCALE_CONF   EQU T_CHAIN       + 2
-DEF T_STRING2      EQU T_SCALE_CONF  + 2
-DEF T_PLATE_SIDE   EQU T_STRING2     + 2
-DEF T_STRING       EQU T_PLATE_SIDE  + 2
+DEF T_CHAIN        EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.chain - JudgeObj16Tiles) / 2) / 4"
+DEF T_SCALE_CONF   EQUS "T_CHAIN       + 2"
+DEF T_STRING2      EQUS "T_SCALE_CONF  + 2"
+DEF T_PLATE_SIDE   EQUS "T_STRING2     + 2"
+
+DEF T_STRING       EQU $00
 DEF T_PLATE_LEFT1  EQU T_STRING      + 2
 DEF T_PLATE_LEFT2  EQU T_PLATE_LEFT1 + 2
 DEF T_PLATE        EQU T_PLATE_LEFT2 + 2
 
-DEF T_SOUL         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
+DEF T_SOUL         EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
 DEF O_SOUL         EQU O_EAR_RIGHT   + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
@@ -96,7 +97,7 @@ DEF Y_SOUL_5       EQU Y_SOUL_0 - 3
 DEF Y_SOUL_6       EQU Y_SOUL_0 - 2
 DEF Y_SOUL_7       EQU Y_SOUL_0 - 1
 
-DEF T_FEATHER      EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.feather - JudgeObj16Tiles) / 2) / 4"
+DEF T_FEATHER      EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.feather - JudgeObj16Tiles) / 2) / 4"
 DEF O_FEATHER      EQU O_SOUL + W_SOUL
 DEF H_FEATHER      EQU   2
 DEF W_FEATHER      EQU   1
