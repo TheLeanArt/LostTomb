@@ -7,13 +7,15 @@ Game Boy animation created by subpixel for GB Pixel Art Jam 2025 (1-bit edition)
 All the differences from the animated GIF (that we're aware of):
 
 * Added music
+* Improved eye and mouth movement
+* Added cartouche and ear movement
 * Status bar scroll-in
 * Protagonist flip
 * Interpolated arm and wall graphics
 * Chains roll into the beam
 * Waves change direction
 * Higher water line
-* Bubbles on the left are identical to those on the right
+* Same bubbles, different times
 * Caption changed to JUDGMENT COMETH
 * Health indicator blinks at half the frequency
 * Slightly lower frequency overall
