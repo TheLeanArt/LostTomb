@@ -132,10 +132,10 @@ JudgeChainTiles::
 
 JudgeObj8Tiles::
 	INCBIN "judge_scales.1bpp"
-.eye::
-	INCBIN "judge_eye.1bpp"
 .mouth::
 	INCBIN "judge_mouth.1bpp"
+.eye::
+	INCBIN "judge_eye.1bpp"
 .end::
 
 JudgeObj16Tiles::

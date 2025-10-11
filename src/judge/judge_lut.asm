@@ -8,7 +8,6 @@ include "judge.inc"
 
 
 DEF M_CAT     EQUS READFILE("judge_cat.tilemap")
-DEF M_EYE     EQUS READFILE("judge_eye.tilemap")
 DEF M_SOUL    EQUS READFILE("judge_soul.tilemap")
 DEF M_FEATHER EQUS READFILE("judge_feather.tilemap")
 
@@ -21,7 +20,7 @@ FOR I, 8
 	INCBIN "judge_fin.tilemap", I * W_FIN, W_FIN
 	INCBIN "judge_paw.tilemap", I * H_PAW * W_PAW, H_PAW * W_PAW
 
-	db STRBYTE(#M_EYE,     I) * 2 + T_EYE
+	db T_EYE_{d:I}
 	db T_NOSE_{d:I}
 	db T_MOUTH_{d:I}
 

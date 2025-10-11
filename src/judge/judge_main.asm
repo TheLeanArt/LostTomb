@@ -109,17 +109,23 @@ ENDC
 .eyes
 	ld a, [hli]
 	ld bc, wShadowOAM + O_EYE_LEFT * OBJ_SIZE + OAMA_TILEID
+	bit 6, e
+	jr z, .mouth
 	ld [bc], a
 	ld c, O_EYE_RIGHT * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
 .nose
-	ld a, [hli]
+	ld a, [hl]
 	ld c, O_NOSE * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
 .mouth
+	inc l
+	ld a, e
+	and $C0
 	ld a, [hli]
+	jr nz, .scales
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 

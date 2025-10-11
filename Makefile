@@ -55,7 +55,6 @@ JUDGE_2BPP = \
 
 JUDGE_MAIN_MAPS = \
 	art/judge/judge_status.tilemap \
-	art/judge/judge_eye.tilemap \
 	art/judge/judge_soul.tilemap \
 	art/judge/judge_feather.tilemap \
 	art/judge/judge_cat.tilemap \
@@ -97,9 +96,6 @@ art/judge/judge_soul.1bpp art/judge/judge_soul.tilemap: art/judge/judge_soul.png
 
 art/judge/judge_feather.1bpp art/judge/judge_feather.tilemap: art/judge/judge_feather.png
 	$(RGBGFX) -uZ -d1 -T $< -o $@
-
-art/judge/judge_eye.1bpp art/judge/judge_eye.tilemap: art/judge/judge_eye.png
-	$(RGBGFX) -u -d1 -T $< -o $@
 
 art/judge/judge_status.1bpp art/judge/judge_status.tilemap: art/judge/judge_status.png art/judge/judge_health.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_health.1bpp
