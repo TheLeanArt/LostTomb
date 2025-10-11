@@ -61,19 +61,19 @@ ENDC
 	swap a
 	ld d, a
 
-IF JUDGE_HEALTH < 2
-
-	and 1 << JUDGE_HEALTH
-REPT JUDGE_HEALTH
-	rrca
-ENDR
-	add T_HEALTH_HALF
-	ld [V_HEALTH], a
-
-ELIF JUDGE_HEALTH == 2
-
-	; Optimized by calc84maniac
+.health
 	cpl
+	ld hl, V_HEALTH
+	bit 6, e
+	jr z, .healthDown
+
+	and 1
+	add T_HEALTH_HALF
+	ld [hl], a
+	jr .healthDone
+
+.healthDown
+	; Optimized by calc84maniac
 	add MAX_HEALTH + 1
 	ld hl, V_HEALTH
 .healthLoop
@@ -88,26 +88,7 @@ ELIF JUDGE_HEALTH == 2
 	inc l
 	bit 2, l
 	jr z, .healthLoop
-
-ELSE
-
-	; Optimized by calc84maniac
-	sub MAX_HEALTH + 1
-	rra
-	ld b, a
-	ld hl, V_HEALTH
-	ld a, T_HEALTH_FULL
-.healthLoop
-	inc b
-	jr nz, .healthCont
-	adc -2					   ; T_HEALTH_EMPTY or T_HEALTH_HALF
-.healthCont
-	ld [hli], a
-	res 0, a				   ; Change T_HEALTH_HALF to T_HEALTH_EMPTY
-	bit 2, l
-	jr z, .healthLoop
-
-ENDC
+.healthDone
 
 .wave
 	ld a, d

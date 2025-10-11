@@ -180,12 +180,5 @@ BackMap:
 
 StatusMap:
 	INCBIN "judge_status.tilemap"
-IF JUDGE_HEALTH < 2
-	db T_HEALTH_HALF
-	db T_HEALTH_EMPTY
-	db T_HEALTH_EMPTY
-	db T_HEALTH_EMPTY
-ELSE
 	ds 4, T_HEALTH_FULL
-ENDC
 .end
