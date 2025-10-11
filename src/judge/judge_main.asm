@@ -169,12 +169,13 @@ ENDC
 	ld a, e                       ; Load the value in E into A
 	rlca                          ; Divide A by 2
 	and 1                         ; Isolate bit 0
+
 	add X_EAR_RIGHT               ; Adjust right ear's X coordinate
 	ld c, O_EAR_RIGHT * OBJ_SIZE + OAMA_X
 	ld [bc], a                    ; Set X
 
 	cpl                           ; Negate
-	add LOW(X_EAR_RIGHT + X_EAR_LEFT + 1) ; Adjust right ear's X coordinate
+	add LOW(X_EAR_RIGHT + X_EAR_LEFT + 1)
 	ld c, O_EAR_LEFT * OBJ_SIZE + OAMA_X
 	ld [bc], a                    ; Set X
 
