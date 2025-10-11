@@ -52,7 +52,7 @@ ENDC
 
 	ld a, e
 	and $07
-	jr nz, .loopCont
+	jp nz, .loopCont
 
 	ld a, e
 	and $38
@@ -91,7 +91,35 @@ ELSE
 ENDC
 
 .wave
-	call UpdateWaveAndBubble
+	ld a, d
+	bit 7, e
+	jr z, .waveCont
+	cpl
+.waveCont
+	and $07
+	add T_WAVE
+	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
+.waveLoop
+	ld [bc], a
+	inc c
+	bit TZCOUNT(TILEMAP_WIDTH), c
+	jr z, .waveLoop
+
+.bubble:
+	ld h, HIGH(Bubbles)        ; Load upper source address byte
+	ld a, e                    ; Load the step counter
+	rlca                       ; Divide by 64
+	rlca                       ; ...
+	and $03                    ; Isolate bits 0 and 1
+	ld l, a                    ; Load lower source address byte
+	ld c, [hl]                 ; Load lower destination address byte
+	inc l                      ; Advance to the current bubble
+	xor a                      ; Set A to 0
+	ld [bc], a                 ; Clear the previous bubble
+	ld c, [hl]                 ; Load lower destination address byte
+	ld a, d                    ; Load the current step
+	add T_BUBBLE               ; Add base tile ID
+	ld [bc], a                 ; Set the current bubble
 
 	ld l, d
 	swap l
@@ -202,49 +230,6 @@ ENDC
 	jp .loop
 
 
-SECTION "UpdateWaveAndBubble", ROM0
-UpdateWaveAndBubble:
-.wave
-	ld a, d
-	bit 7, e
-	jr z, .cont
-	cpl
-.cont
-	and $07
-	add T_WAVE
-	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
-.loop
-	ld [bc], a
-	inc c
-	bit TZCOUNT(TILEMAP_WIDTH), c
-	jr z, .loop
-
-.bubble:
-	ld h, HIGH(Bubbles)        ; Load upper source address byte
-	ld a, e                    ; Load the step counter
-	rlca                       ; Divide by 64
-	rlca                       ; ...
-	and $03                    ; Isolate bits 0 and 1
-	ld l, a                    ; Load lower source address byte
-	ld c, [hl]                 ; Load lower destination address byte
-	inc l                      ; Advance to the current bubble
-	xor a                      ; Set A to 0
-	ld [bc], a                 ; Clear the previous bubble
-	ld c, [hl]                 ; Load lower destination address byte
-	ld a, d                    ; Load the current step
-	add T_BUBBLE               ; Add base tile ID
-	ld [bc], a                 ; Set the current bubble
-	ret
-
-
-SECTION "Judge Bubbles", ROMX, ALIGN[8]
-Bubbles:
-FOR I, BUBBLE_COUNT
-	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE{d:I})
-ENDR
-	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE0)
-
-
 SECTION "UpdateFinAndPaw", ROM0
 UpdateFinAndPaw:
 .fin
@@ -315,6 +300,14 @@ UpdateSoul:
 	add a                      ; ...
 	ld [hli], a                ; Set attributes and advance to the next object
 	ret
+
+
+SECTION "Judge Bubbles", ROMX, ALIGN[8]
+Bubbles:
+FOR I, BUBBLE_COUNT
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE{d:I})
+ENDR
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE0)
 
 
 IF JUDGE_MUSIC
