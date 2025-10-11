@@ -11,6 +11,8 @@ All the differences from the animated GIF (that we're aware of):
 * Protagonist flip
 * Interpolated arm and wall graphics
 * Chains roll into the beam
+* Waves change direction
+* Higher water line
 * Bubbles on the left are identical to those on the right
 * Caption changed to JUDGMENT COMETH
 * Health indicator blinks at half the frequency
@@ -21,6 +23,10 @@ All the differences from the animated GIF (that we're aware of):
 * **Art:** [subpixel](https://subpixel.itch.io/)
 * **Music:** [Yogi (Tronimal)](https://yogi-tronimal.itch.io/)
 * **Code:** [Lean Art](https://leanart.itch.io/)
+
+## Thanks
+
+[calc84maniac](https://github.com/calc84maniac/) for some mad optimisations
 
 ## Licenses
 

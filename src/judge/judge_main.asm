@@ -28,6 +28,8 @@ JudgeMain:
 	ldh [rIF], a
 	ei
 
+IF JUDGE_MUSIC
+
 	dec a                        ; A is zero from previous operations
 	ldh [rNR52], a               ; Enable all channels
 IF !MUSIC_STEREO
@@ -40,6 +42,8 @@ ENDC
 
 	ld a, MUSIC_DELAY
 	ldh [hDelay], a
+
+ENDC
 
 	ld e, 0
 .loop
@@ -54,7 +58,7 @@ ENDC
 	and $38
 	add a
 	swap a
-	ld b, a
+	ld d, a
 
 IF JUDGE_HEALTH < 2
 
@@ -87,9 +91,9 @@ ELSE
 ENDC
 
 .wave
-	ld l, b
 	call UpdateWaveAndBubble
 
+	ld l, d
 	swap l
 	ld h, HIGH(JudgeLUT) >> 1
 	add hl, hl
@@ -105,17 +109,23 @@ ENDC
 .eyes
 	ld a, [hli]
 	ld bc, wShadowOAM + O_EYE_LEFT * OBJ_SIZE + OAMA_TILEID
+	bit 6, e
+	jr z, .mouth
 	ld [bc], a
 	ld c, O_EYE_RIGHT * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
 .nose
-	ld a, [hli]
+	ld a, [hl]
 	ld c, O_NOSE * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
 .mouth
+	inc l
+	ld a, e
+	and $C0
 	ld a, [hli]
+	jr nz, .cartDone
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
@@ -125,6 +135,7 @@ IF JUDGE_CART
 	ld c, O_CART * OBJ_SIZE + OAMA_Y
 	ld [bc], a                    ; Set Y
 ENDC
+.cartDone
 
 .ears
 	ld a, e                       ; Load the value in E into A
@@ -171,6 +182,9 @@ ENDC
 	ldh [rWY], a
 
 .loopCont
+
+IF JUDGE_MUSIC
+
 	ldh a, [hDelay]
 	or a
 	jr z, .doSound
@@ -181,6 +195,8 @@ ENDC
 .doSound
 	call hUGE_dosound
 
+ENDC
+
 .loopDone
 	pop de
 	inc e
@@ -190,7 +206,7 @@ ENDC
 SECTION "UpdateWaveAndBubble", ROM0
 UpdateWaveAndBubble:
 .wave
-	ld a, l
+	ld a, d
 	bit 7, e
 	jr z, .cont
 	cpl
@@ -204,17 +220,30 @@ UpdateWaveAndBubble:
 	bit TZCOUNT(TILEMAP_WIDTH), c
 	jr z, .loop
 
-.bubble
-	ld a, l
-	add T_BUBBLE
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE1)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE2)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE3)
-	ld [bc], a
+.bubble:
+	ld h, HIGH(Bubbles)        ; Load upper source address byte
+	ld a, e                    ; Load the step counter
+	rlca                       ; Divide by 64
+	rlca                       ; ...
+	and $03                    ; Isolate bits 0 and 1
+	ld l, a                    ; Load lower source address byte
+	ld c, [hl]                 ; Load lower destination address byte
+	inc l                      ; Advance to the current bubble
+	xor a                      ; Set A to 0
+	ld [bc], a                 ; Clear the previous bubble
+	ld c, [hl]                 ; Load lower destination address byte
+	ld a, d                    ; Load the current step
+	add T_BUBBLE               ; Add base tile ID
+	ld [bc], a                 ; Set the current bubble
 	ret
+
+
+SECTION "Judge Bubbles", ROMX, ALIGN[8]
+Bubbles:
+FOR I, BUBBLE_COUNT
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE{d:I})
+ENDR
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE0)
 
 
 SECTION "UpdateFinAndPaw", ROM0
@@ -289,6 +318,10 @@ UpdateSoul:
 	ret
 
 
+IF JUDGE_MUSIC
+
 SECTION "Judgment Delay", HRAM
 hDelay:
 	ds 1
+
+ENDC
