@@ -132,19 +132,25 @@ JudgeChainTiles::
 
 JudgeObj8Tiles::
 	INCBIN "judge_scales.1bpp"
-.eye::
-	INCBIN "judge_eye.1bpp"
-.nose::
-	INCBIN "judge_nose.1bpp"
 .mouth::
 	INCBIN "judge_mouth.1bpp"
+.eye::
+	INCBIN "judge_eye.1bpp"
 .end::
 
 JudgeObj16Tiles::
+.nose::
+	INCBIN "judge_nose.1bpp"
 .soul::
 	INCBIN "judge_soul.1bpp"
 .feather::
 	INCBIN "judge_feather.1bpp"
+.cart::
+	INCBIN "judge_cart.1bpp"
+.earLeft::
+	INCBIN "judge_ear_left.1bpp"
+.earRight::
+	INCBIN "judge_ear_right.1bpp"
 .end::
 
 JudgeBack2Tiles::

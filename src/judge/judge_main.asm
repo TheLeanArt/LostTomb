@@ -28,6 +28,8 @@ JudgeMain:
 	ldh [rIF], a
 	ei
 
+IF JUDGE_MUSIC
+
 	dec a                        ; A is zero from previous operations
 	ldh [rNR52], a               ; Enable all channels
 IF !MUSIC_STEREO
@@ -41,6 +43,8 @@ ENDC
 	ld a, MUSIC_DELAY
 	ldh [hDelay], a
 
+ENDC
+
 	ld e, 0
 .loop
 	push de
@@ -48,22 +52,52 @@ ENDC
 
 	ld a, e
 	and $07
-	jr nz, .loopCont
+	jp nz, .loopCont
 
 	ld a, e
 	and $38
 	add a
-	ld b, a
 	swap a
+	ld d, a
 
-.health
+IF JUDGE_HEALTH < 2
+
+	and 1 << JUDGE_HEALTH
+REPT JUDGE_HEALTH
+	rrca
+ENDR
+	add T_HEALTH_HALF
+	ld [MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH], a
+
+ELIF JUDGE_HEALTH == 2
+
+	; Optimized by calc84maniac
+	cpl
+	add MAX_HEALTH + 1
+	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
+.healthLoop
+	sub 2
+	ld d, T_HEALTH_FULL
+	jr nc, .healthCont
+	add d                      ; T_HEALTH_EMPTY or T_HEALTH_HALF
+	ld d, a
+	xor a
+.healthCont
+	ld [hl], d
+	inc l
+	bit 2, l
+	jr z, .healthLoop
+
+ELSE
+
+	; Optimized by calc84maniac
 	sub MAX_HEALTH + 1
 	rra
-	ld d, a
+	ld b, a
 	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
 	ld a, T_HEALTH_FULL
 .healthLoop
-	inc d
+	inc b
 	jr nz, .healthCont
 	ASSERT T_HEALTH_EMPTY == T_HEALTH_FULL - 2
 	ASSERT T_HEALTH_HALF == T_HEALTH_FULL - 1
@@ -75,48 +109,96 @@ ENDC
 	bit 2, l
 	jr z, .healthLoop
 
-	ld l, b
-	ld h, HIGH(JudgeLUT) >> 1
-	add hl, hl
-	call SetPawAndFin
+ENDC
 
-	ld a, [hli]
-	ld c, LOW(ROW_WAVE * TILEMAP_WIDTH + COL_WAVE)
+.wave
+	ld a, d
+	bit 7, e
+	jr z, .waveCont
+	cpl
+.waveCont
+	and $07
+	add T_WAVE
+	ld bc, MAP_WAVE + ROW_WAVE * TILEMAP_WIDTH + COL_WAVE
 .waveLoop
 	ld [bc], a
 	inc c
 	bit TZCOUNT(TILEMAP_WIDTH), c
 	jr z, .waveLoop
 
-	ld a, [hli]
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE1)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE2)
-	ld [bc], a
-	ld c, LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE3)
-	ld [bc], a
+.bubble:
+	ld h, HIGH(Bubbles)        ; Load upper source address byte
+	ld a, e                    ; Load the step counter
+	rlca                       ; Divide by 64
+	rlca                       ; ...
+	and $03                    ; Isolate bits 0 and 1
+	ld l, a                    ; Load lower source address byte
+	ld c, [hl]                 ; Load lower destination address byte
+	inc l                      ; Advance to the current bubble
+	xor a                      ; Set A to 0
+	ld [bc], a                 ; Clear the previous bubble
+	ld c, [hl]                 ; Load lower destination address byte
+	ld a, d                    ; Load the current step
+	add T_BUBBLE               ; Add base tile ID
+	ld [bc], a                 ; Set the current bubble
 
+	ld l, d
+	swap l
+	ld h, HIGH(JudgeLUT) >> 1
+	add hl, hl
+
+.cat
 	ld a, [hli]
 	ld c, LOW(ROW_CAT * TILEMAP_WIDTH + COL_CAT)
 	ld [bc], a
 
+.fin
+	call UpdateFinAndPaw
+
 .eyes
 	ld a, [hli]
 	ld bc, wShadowOAM + O_EYE_LEFT * OBJ_SIZE + OAMA_TILEID
+	bit 6, e
+	jr z, .mouth
 	ld [bc], a
 	ld c, O_EYE_RIGHT * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
 .nose
-	ld a, [hli]
+	ld a, [hl]
 	ld c, O_NOSE * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
 
 .mouth
+	inc l
+	ld a, e
+	and $C0
 	ld a, [hli]
+	jr nz, .cartDone
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
+
+IF JUDGE_CART
+	rrca                          ; Divide A by 2
+	add Y_CART - T_MOUTH / 2 - 1 ; Adjust cart's Y coordinate
+	ld c, O_CART * OBJ_SIZE + OAMA_Y
+	ld [bc], a                    ; Set Y
+ENDC
+.cartDone
+
+.ears
+	ld a, e                       ; Load the value in E into A
+	rlca                          ; Divide A by 2
+	and 1                         ; Isolate bit 0
+
+	add X_EAR_RIGHT               ; Adjust right ear's X coordinate
+	ld c, O_EAR_RIGHT * OBJ_SIZE + OAMA_X
+	ld [bc], a                    ; Set X
+
+	cpl                           ; Negate
+	add LOW(X_EAR_RIGHT + X_EAR_LEFT + 1)
+	ld c, O_EAR_LEFT * OBJ_SIZE + OAMA_X
+	ld [bc], a                    ; Set X
 
 .scales
 	ld c, l
@@ -149,6 +231,9 @@ ENDC
 	ldh [rWY], a
 
 .loopCont
+
+IF JUDGE_MUSIC
+
 	ldh a, [hDelay]
 	or a
 	jr z, .doSound
@@ -159,25 +244,26 @@ ENDC
 .doSound
 	call hUGE_dosound
 
+ENDC
+
 .loopDone
 	pop de
 	inc e
 	jp .loop
 
 
-SECTION "SetPawAndFin", ROM0
-SetPawAndFin:
-
-FOR Y, ROW_PAW, ROW_PAW + H_PAW
-IF Y == ROW_PAW
-	ld bc, MAP_PAW + ROW_PAW * TILEMAP_WIDTH + COL_PAW
-ELSE
-	ld c, Y * TILEMAP_WIDTH + COL_PAW
-ENDC
+SECTION "UpdateFinAndPaw", ROM0
+UpdateFinAndPaw:
+.fin
+	ld c, LOW(ROW_FIN * TILEMAP_WIDTH + COL_FIN)
 	call CopyFour
-ENDR
 
-	ld bc, MAP_FIN + ROW_FIN * TILEMAP_WIDTH + COL_FIN
+.paw
+	ld bc, MAP_PAW + ROW_PAW * TILEMAP_WIDTH + COL_PAW
+	call CopyFour
+	ld c, (ROW_PAW + 1) * TILEMAP_WIDTH + COL_PAW
+	call CopyFour
+	ld c, (ROW_PAW + 2) * TILEMAP_WIDTH + COL_PAW
 	; Fall through
 
 CopyFour:
@@ -213,8 +299,8 @@ UpdateSoul:
 	ld [hli], a                ; Set Y and advance to X
 	ld d, a                    ; Store Y in D
 	ld a, e                    ; Load the step counter
-	and OAM_XFLIP << 2         ; Isolate bit 7
-	swap a                     ; Move to bit 3
+	swap a                     ; Divide A by 16
+	and OAM_XFLIP >> 2         ; Isolate bit 3
 	ld e, a                    ; Store the flip indicator in E
 	call .rest                 ; Update the rest of the left object
 
@@ -238,6 +324,18 @@ UpdateSoul:
 	ret
 
 
+SECTION "Judge Bubbles", ROMX, ALIGN[8]
+Bubbles:
+FOR I, BUBBLE_COUNT
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE{d:I})
+ENDR
+	db LOW(ROW_BUBBLE * TILEMAP_WIDTH + COL_BUBBLE0)
+
+
+IF JUDGE_MUSIC
+
 SECTION "Judgment Delay", HRAM
 hDelay:
 	ds 1
+
+ENDC

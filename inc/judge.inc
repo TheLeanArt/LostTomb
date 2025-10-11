@@ -8,20 +8,69 @@ DEF Y_WINDOW_FINAL EQU SCREEN_HEIGHT_PX - 8
 DEF X_WINDOW_INIT  EQU WX_OFS
 
 DEF T_EYE          EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.eye - JudgeObj8Tiles)) / 4"
+DEF T_EYE_0        EQUS "T_EYE"
+DEF T_EYE_1        EQUS "T_EYE + 2"
+DEF T_EYE_2        EQUS "T_EYE + 4"
+DEF T_EYE_3        EQUS "T_EYE + 6"
+DEF T_EYE_4        EQUS "T_EYE + 2"
+DEF T_EYE_5        EQUS "T_EYE"
+DEF T_EYE_6        EQUS "T_EYE"
+DEF T_EYE_7        EQUS "T_EYE"
+
 DEF O_EYE_LEFT     EQU   0
 DEF Y_EYE          EQU  49
 DEF X_EYE_LEFT     EQU 136
 
-DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.nose - JudgeObj8Tiles)) / 4"
-DEF O_NOSE         EQU O_EYE_LEFT    + 1
-
-DEF O_EYE_RIGHT    EQU O_NOSE        + 1
+DEF O_EYE_RIGHT    EQU O_EYE_LEFT    + 1
 DEF X_EYE_RIGHT    EQU 149
 
+DEF T_NOSE         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.nose - JudgeObj16Tiles) / 2) / 4"
+DEF O_NOSE         EQU O_EYE_RIGHT   + 1
+DEF Y_NOSE         EQU  48
+DEF X_NOSE         EQU 144
+
+FOR I, 8
+IF I == 2
+	DEF T_NOSE_{d:I}  EQUS "T_NOSE + 2"
+ELSE
+	DEF T_NOSE_{d:I}  EQUS "T_NOSE"
+ENDC
+ENDR
+
 DEF T_MOUTH        EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
-DEF O_MOUTH        EQU O_EYE_RIGHT   + 1
+DEF O_MOUTH        EQU O_NOSE        + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
+
+DEF T_MOUTH_OPEN   EQUS "T_MOUTH + 2"
+DEF T_MOUTH_CLOSED EQUS "T_MOUTH"
+DEF T_MOUTH_0      EQUS "T_MOUTH_OPEN"
+DEF T_MOUTH_1      EQUS "T_MOUTH_OPEN"
+DEF T_MOUTH_2      EQUS "T_MOUTH_CLOSED"
+DEF T_MOUTH_3      EQUS "T_MOUTH_OPEN"
+DEF T_MOUTH_4      EQUS "T_MOUTH_CLOSED"
+DEF T_MOUTH_5      EQUS "T_MOUTH_CLOSED"
+DEF T_MOUTH_6      EQUS "T_MOUTH_OPEN"
+DEF T_MOUTH_7      EQUS "T_MOUTH_CLOSED"
+
+IF !DEF (JUDGE_CART)
+	DEF JUDGE_CART    EQU 0
+ENDC
+
+DEF T_CART         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.cart - JudgeObj16Tiles) / 2) / 4"
+DEF O_CART         EQU  O_MOUTH      + 1
+DEF Y_CART         EQU  80
+DEF X_CART         EQU 142
+
+DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
+DEF O_EAR_LEFT     EQU O_CART        + 1
+DEF Y_EAR_LEFT     EQU 27
+DEF X_EAR_LEFT     EQU 129
+
+DEF T_EAR_RIGHT    EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
+DEF O_EAR_RIGHT    EQU O_EAR_LEFT    + 1
+DEF Y_EAR_RIGHT    EQU 25
+DEF X_EAR_RIGHT    EQU 157
 
 DEF T_CHAIN        EQU $00
 DEF T_SCALE_CONF   EQU T_CHAIN       + 2
@@ -33,8 +82,7 @@ DEF T_PLATE_LEFT2  EQU T_PLATE_LEFT1 + 2
 DEF T_PLATE        EQU T_PLATE_LEFT2 + 2
 
 DEF T_SOUL         EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.soul - JudgeObj16Tiles) / 2) / 4"
-
-DEF O_SOUL         EQU O_MOUTH + 1
+DEF O_SOUL         EQU O_EAR_RIGHT   + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
 DEF X_SOUL         EQU  28
@@ -93,14 +141,20 @@ DEF O_CHAIN_RIGHT  EQU O_CHAIN_RIGHT2 + H_CHAIN_RIGHT2
 DEF O_STRING_RIGHT EQU O_CHAIN_RIGHT  + H_CHAIN_RIGHT
 DEF O_PLATE_RIGHT  EQU O_STRING_RIGHT + 4
 
+DEF T_WAVE         EQU $17
+DEF MAP_WAVE       EQU TILEMAP0
 DEF ROW_WAVE       EQU  14
 DEF COL_WAVE       EQU   0
 
+DEF T_BUBBLE       EQU $1F
+DEF MAP_BUBBLE     EQU TILEMAP0
 DEF ROW_BUBBLE     EQU  15
+
+DEF BUBBLE_COUNT   EQU   4
 DEF COL_BUBBLE0    EQU   0
-DEF COL_BUBBLE1    EQU   6
-DEF COL_BUBBLE2    EQU  13
-DEF COL_BUBBLE3    EQU  17
+DEF COL_BUBBLE1    EQU  17
+DEF COL_BUBBLE2    EQU   6
+DEF COL_BUBBLE3    EQU  13
 
 DEF W_FIN          EQU   4
 DEF MAP_FIN        EQU TILEMAP0
@@ -116,9 +170,13 @@ DEF COL_PAW        EQU   5
 DEF ROW_CAT        EQU  10
 DEF COL_CAT        EQU  15
 
-DEF T_HEALTH_EMPTY EQU $00
-DEF T_HEALTH_HALF  EQU $01
-DEF T_HEALTH_FULL  EQU $02
+IF !DEF (JUDGE_HEALTH)
+	DEF JUDGE_HEALTH  EQU 0
+ENDC
+
+DEF T_HEALTH_EMPTY EQU $02
+DEF T_HEALTH_HALF  EQU $03
+DEF T_HEALTH_FULL  EQU $04
 
 DEF MAP_HEALTH     EQU  TILEMAP1
 DEF ROW_HEALTH     EQU   0
@@ -133,6 +191,10 @@ DEF ROW_TOP_LEFT   EQU   4
 DEF T_TOP_RIGHT    EQUS "T_TOP_LEFT2 + 1"
 DEF COL_TOP_RIGHT  EQU  10
 DEF ROW_TOP_RIGHT  EQU   2
+
+IF !DEF (JUDGE_MUSIC)
+	DEF JUDGE_MUSIC   EQU 0
+ENDC
 
 DEF MUSIC_DELAY    EQU $40
 DEF MUSIC_STEREO   EQU   1

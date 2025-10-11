@@ -18,13 +18,23 @@ InitJudgeObjects:
 	ld bc, T_EYE << 8
 	ld de, Y_EYE << 8 | X_EYE_LEFT
 	call SetObject
-	ld b, T_NOSE
-	call SetAdjObject
 	ld bc, T_EYE << 8 | OAM_XFLIP
 	ld e, X_EYE_RIGHT
 	call SetObject
-	ld bc, T_MOUTH << 8
+	ld bc, T_NOSE_0 << 8
+	ld de, Y_NOSE << 8 | X_NOSE
+	call SetObject
+	ld b, T_MOUTH_0
 	ld de, Y_MOUTH << 8 | X_MOUTH
+	call SetObject
+	ld b, T_CART
+	ld d, Y_CART
+	call SetObject
+	ld b, T_EAR_LEFT
+	ld de, Y_EAR_LEFT << 8 | X_EAR_LEFT
+	call SetObject
+	ld b, T_EAR_RIGHT
+	ld de, Y_EAR_RIGHT << 8 | X_EAR_RIGHT
 	call SetObject
 
 .soul
