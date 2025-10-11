@@ -77,13 +77,13 @@ ELIF JUDGE_HEALTH == 2
 	ld hl, MAP_HEALTH + ROW_HEALTH * TILEMAP_WIDTH + COL_HEALTH
 .healthLoop
 	sub 2
-	ld d, T_HEALTH_FULL
+	ld b, T_HEALTH_FULL
 	jr nc, .healthCont
-	add d                      ; T_HEALTH_EMPTY or T_HEALTH_HALF
-	ld d, a
+	add b                      ; T_HEALTH_EMPTY or T_HEALTH_HALF
+	ld b, a
 	xor a
 .healthCont
-	ld [hl], d
+	ld [hl], b
 	inc l
 	bit 2, l
 	jr z, .healthLoop
@@ -99,12 +99,9 @@ ELSE
 .healthLoop
 	inc b
 	jr nz, .healthCont
-	ASSERT T_HEALTH_EMPTY == T_HEALTH_FULL - 2
-	ASSERT T_HEALTH_HALF == T_HEALTH_FULL - 1
 	adc -2					   ; T_HEALTH_EMPTY or T_HEALTH_HALF
 .healthCont
-	ld [hl+], a
-	ASSERT (T_HEALTH_HALF & 1) == 1
+	ld [hli], a
 	res 0, a				   ; Change T_HEALTH_HALF to T_HEALTH_EMPTY
 	bit 2, l
 	jr z, .healthLoop
