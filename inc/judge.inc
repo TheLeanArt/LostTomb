@@ -65,12 +65,12 @@ DEF X_CART         EQU 142
 DEF T_EAR_LEFT     EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
 DEF O_EAR_LEFT     EQU O_CART        + 1
 DEF Y_EAR_LEFT     EQU 27
-DEF X_EAR_LEFT     EQU 128
+DEF X_EAR_LEFT     EQU 129
 
 DEF T_EAR_RIGHT    EQUS "((JudgeChainTiles.end - JudgeChainTiles) / 2 + (JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
 DEF O_EAR_RIGHT    EQU O_EAR_LEFT    + 1
 DEF Y_EAR_RIGHT    EQU 25
-DEF X_EAR_RIGHT    EQU 158
+DEF X_EAR_RIGHT    EQU 157
 
 DEF T_CHAIN        EQU $00
 DEF T_SCALE_CONF   EQU T_CHAIN       + 2
