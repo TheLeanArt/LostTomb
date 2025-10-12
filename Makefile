@@ -13,6 +13,8 @@ RGBASMFLAGS  = -I inc
 RGBASMFLAGS_JUDGE = $(RGBASMFLAGS) \
 	-I art/judge
 
+T_BACK = 2E
+
 OBJS = \
 	src/main.o \
 	src/oamdma.o \
@@ -61,7 +63,6 @@ JUDGE_MAIN_MAPS = \
 	art/judge/judge_status.tilemap \
 	art/judge/judge_soul.tilemap \
 	art/judge/judge_feather.tilemap \
-	art/judge/judge_cat.tilemap \
 	art/judge/judge_paw.tilemap \
 	art/judge/judge_fin.tilemap \
 
@@ -104,26 +105,17 @@ art/judge/judge_feather.1bpp art/judge/judge_feather.tilemap: art/judge/judge_fe
 art/judge/judge_status.1bpp art/judge/judge_status.tilemap: art/judge/judge_status.png art/judge/judge_health.1bpp
 	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_health.1bpp
 
-art/judge/judge_cat.1bpp art/judge/judge_cat.tilemap: art/judge/judge_cat.png art/judge/judge_status.1bpp
-	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_status.1bpp
+art/judge/judge_scarf_tip.1bpp: art/judge/judge_scarf_tip.png
+	$(RGBGFX) -u -d1 $< -o $@
 
-art/judge/judge_wave.1bpp: art/judge/judge_wave.png art/judge/judge_cat.1bpp
-	$(RGBGFX) -u -d1 $< -o $@ -i art/judge/judge_cat.1bpp
-
-art/judge/judge_bubble.1bpp: art/judge/judge_bubble.png art/judge/judge_wave.1bpp
-	$(RGBGFX) -u -d1 $< -o $@ -i art/judge/judge_wave.1bpp
-
-art/judge/judge_scarf_tip.1bpp: art/judge/judge_scarf_tip.png art/judge/judge_bubble.1bpp
-	$(RGBGFX) -u -d1 $< -o $@ -i art/judge/judge_bubble.1bpp
-
-art/judge/judge_paw.1bpp art/judge/judge_paw.tilemap: art/judge/judge_paw.png art/judge/judge_scarf_tip.1bpp
-	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_scarf_tip.1bpp
+art/judge/judge_paw.1bpp art/judge/judge_paw.tilemap: art/judge/judge_paw.png
+	$(RGBGFX) -u -d1 -T -b 0x$(T_BACK) $< -o $@
 
 art/judge/judge_fin.1bpp art/judge/judge_fin.tilemap: art/judge/judge_fin.png art/judge/judge_paw.1bpp
-	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_paw.1bpp
+	$(RGBGFX) -u -d1 -T -b 0x$(T_BACK) $< -o $@ -i art/judge/judge_paw.1bpp
 
 art/judge/judge_back.1bpp art/judge/judge_back.tilemap: art/judge/judge_back.png art/judge/judge_fin.1bpp
-	$(RGBGFX) -u -d1 -T $< -o $@ -i art/judge/judge_fin.1bpp
+	$(RGBGFX) -u -d1 -T -b 0x$(T_BACK) $< -o $@ -i art/judge/judge_fin.1bpp
 
 art/judge/judge_top_left.2bpp art/judge/judge_top.pal: art/judge/judge_top_left.png
 	$(RGBGFX) -d2 $< -o $@ -p art/judge/judge_top.pal
