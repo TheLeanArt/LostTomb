@@ -45,6 +45,10 @@ IF JUDGE_MUSIC
 	ld a, MUSIC_DELAY
 	ldh [hDelay], a
 
+ELSE
+
+	ldh [rNR52], a             ; Turn the APU off
+
 ENDC
 
 	ld e, 0

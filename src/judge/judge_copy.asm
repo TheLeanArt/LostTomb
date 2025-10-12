@@ -11,9 +11,6 @@ include "judge.inc"
 SECTION FRAGMENT "Judge", ROM0
 Judge::
 	xor a
-IF !JUDGE_MUSIC
-	ldh [rNR52], a             ; Disable audio circuitry
-ENDC
 	ldh [rBGP], a              ; Mask out the tile update
 
 	ld hl, STARTOF(VRAM)
