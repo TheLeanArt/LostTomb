@@ -20,14 +20,17 @@ DEF T_EYE_7        EQUS "T_EYE"
 DEF O_EYE_LEFT     EQU   0
 DEF Y_EYE          EQU  49
 DEF X_EYE_LEFT     EQU 136
+DEF_TILEID_ADDR    EYE_LEFT
 
 DEF O_EYE_RIGHT    EQU O_EYE_LEFT    + 1
 DEF X_EYE_RIGHT    EQU 149
+DEF_TILEID_ADDR    EYE_RIGHT
 
 DEF T_NOSE         EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.nose - JudgeObj16Tiles) / 2) / 4"
 DEF O_NOSE         EQU O_EYE_RIGHT   + 1
 DEF Y_NOSE         EQU  48
 DEF X_NOSE         EQU 144
+DEF_TILEID_ADDR    NOSE
 
 FOR I, 8
 IF I == 2
@@ -41,6 +44,7 @@ DEF T_MOUTH        EQUS "((JudgeObj8Tiles.mouth - JudgeObj8Tiles)) / 4"
 DEF O_MOUTH        EQU O_NOSE        + 1
 DEF Y_MOUTH        EQU  72
 DEF X_MOUTH        EQU 142
+DEF_TILEID_ADDR    MOUTH
 
 DEF T_MOUTH_OPEN   EQUS "T_MOUTH + 2"
 DEF T_MOUTH_CLOSED EQUS "T_MOUTH"
@@ -61,16 +65,19 @@ DEF T_CART         EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Til
 DEF O_CART         EQU  O_MOUTH      + 1
 DEF Y_CART         EQU  80
 DEF X_CART         EQU 142
+DEF_Y_ADDR         CART
 
 DEF T_EAR_LEFT     EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earLeft - JudgeObj16Tiles) / 2) / 4"
 DEF O_EAR_LEFT     EQU O_CART        + 1
 DEF Y_EAR_LEFT     EQU 27
 DEF X_EAR_LEFT     EQU 129
+DEF_X_ADDR         EAR_LEFT
 
 DEF T_EAR_RIGHT    EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.earRight - JudgeObj16Tiles) / 2) / 4"
 DEF O_EAR_RIGHT    EQU O_EAR_LEFT    + 1
 DEF Y_EAR_RIGHT    EQU 25
 DEF X_EAR_RIGHT    EQU 157
+DEF_X_ADDR         EAR_RIGHT
 
 DEF T_CHAIN        EQUS "((JudgeObj8Tiles.end - JudgeObj8Tiles) + (JudgeObj16Tiles.chain - JudgeObj16Tiles) / 2) / 4"
 DEF T_SCALE_CONF   EQUS "T_CHAIN       + 2"
@@ -87,6 +94,7 @@ DEF O_SOUL         EQU O_EAR_RIGHT   + 1
 DEF H_SOUL         EQU   2
 DEF W_SOUL         EQU   2
 DEF X_SOUL         EQU  28
+DEF_Y_ADDR         SOUL
 
 DEF Y_SOUL_0       EQU 104
 DEF Y_SOUL_1       EQU Y_SOUL_0 - 1
@@ -185,7 +193,12 @@ DEF H_PAW          EQU   3
 DEF MAP_PAW        EQU   0
 DEF ROW_PAW        EQU   2
 DEF COL_PAW        EQU   5
-DEF_VRAM_ADDR      PAW
+FOR I, H_PAW
+	DEF MAP_PAW{d:I} EQU MAP_PAW
+	DEF ROW_PAW{d:I} EQU ROW_PAW + I
+	DEF COL_PAW{d:I} EQU COL_PAW
+	DEF_VRAM_ADDR    PAW{d:I}
+ENDR
 
 DEF T_HEALTH_EMPTY EQU $02
 DEF T_HEALTH_HALF  EQU $03

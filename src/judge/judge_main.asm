@@ -136,16 +136,16 @@ ENDC
 
 .eyes
 	ld a, [hli]
-	ld bc, wShadowOAM + O_EYE_LEFT * OBJ_SIZE + OAMA_TILEID
+	ld bc, A_EYE_LEFT_TILEID
 	bit 6, e
 	jr z, .mouth
 	ld [bc], a
-	ld c, O_EYE_RIGHT * OBJ_SIZE + OAMA_TILEID
+	ld c, LOW(A_EYE_RIGHT_TILEID)
 	ld [bc], a
 
 .nose
 	ld a, [hl]
-	ld c, O_NOSE * OBJ_SIZE + OAMA_TILEID
+	ld c, LOW(A_NOSE_TILEID)
 	ld [bc], a
 
 .mouth
@@ -159,7 +159,7 @@ IF JUDGE_CART == 1
 ELSE
 	jr nz, .cartDone
 ENDC
-	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
+	ld c, LOW(A_MOUTH_TILEID)
 	ld [bc], a
 IF JUDGE_CART == 1
 	inc d
@@ -173,7 +173,7 @@ ELIF JUDGE_CART == 2
 	add Y_CART - T_MOUTH / 2 - 1  ; Adjust cart's Y coordinate
 ENDC
 IF JUDGE_CART
-	ld c, O_CART * OBJ_SIZE + OAMA_Y
+	ld c, LOW(A_CART_Y)
 	ld [bc], a                    ; Set Y
 ENDC
 .cartDone
@@ -184,18 +184,18 @@ ENDC
 	and 1                         ; Isolate bit 0
 
 	add X_EAR_RIGHT               ; Adjust right ear's X coordinate
-	ld c, O_EAR_RIGHT * OBJ_SIZE + OAMA_X
+	ld c, LOW(A_EAR_RIGHT_X)
 	ld [bc], a                    ; Set X
 
 	cpl                           ; Negate
 	add LOW(X_EAR_RIGHT + X_EAR_LEFT + 1)
-	ld c, O_EAR_LEFT * OBJ_SIZE + OAMA_X
+	ld c, LOW(A_EAR_LEFT_X)
 	ld [bc], a                    ; Set X
 
 .scales
 	ld c, l
 	ld b, h
-	ld hl, wShadowOAM + O_SOUL * OBJ_SIZE + OAMA_Y
+	ld hl, A_SOUL_Y
 
 .soul
 	call UpdateSoul
@@ -251,11 +251,11 @@ UpdateFinAndPaw:
 	call CopyFour
 
 .paw
-	ld bc, V_PAW
+	ld bc, V_PAW0
 	call CopyFour
-	ld c, (ROW_PAW + 1) * TILEMAP_WIDTH + COL_PAW
+	ld c, LOW(V_PAW1)
 	call CopyFour
-	ld c, (ROW_PAW + 2) * TILEMAP_WIDTH + COL_PAW
+	ld c, LOW(V_PAW2)
 	; Fall through
 
 CopyFour:
