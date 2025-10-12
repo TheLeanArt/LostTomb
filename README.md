@@ -29,6 +29,7 @@ All the differences from the animated GIF (that we're aware of):
 ## Thanks
 
 [calc84maniac](https://github.com/calc84maniac/) for some mad optimisations
+[ISSOtm](https://github.com/ISSOtm) for saner optimisations
 
 ## Licenses
 

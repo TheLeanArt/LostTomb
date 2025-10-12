@@ -31,12 +31,13 @@ JudgeMain:
 
 IF JUDGE_MUSIC
 
+	; Optimized by ISSOtm
+	ld hl, rNR52               ; Load the audio master register's address into HL
+	ld [hl], a                 ; Turn the APU off
 	dec a                      ; A is zero from previous operations
-	ldh [rNR52], a             ; Enable all channels
-IF !MUSIC_STEREO
-	ldh [rNR51], a             ; Play all channels on both speakers
-ENDC
-	ldh [rNR50], a             ; Set the volume to max
+	ld [hld], a                ; Turn the APU on
+	ld [hld], a                ; Enable all channels
+	ld [hl], $77               ; Set max volume but not VIN
 
 	ld hl, song_hideout
 	call hUGE_init
