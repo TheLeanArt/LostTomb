@@ -153,13 +153,26 @@ ENDC
 	ld a, e
 	and $C0
 	ld a, [hli]
+IF JUDGE_CART == 1
+	ld d, Y_CART - 1
+	jr nz, .mouthDone
+ELSE
 	jr nz, .cartDone
+ENDC
 	ld c, O_MOUTH * OBJ_SIZE + OAMA_TILEID
 	ld [bc], a
+IF JUDGE_CART == 1
+	inc d
+ENDC
+.mouthDone
 
-IF JUDGE_CART
+IF JUDGE_CART == 1
+	ld a, d
+ELIF JUDGE_CART == 2
 	rrca                          ; Divide A by 2
-	add Y_CART - T_MOUTH / 2 - 1 ; Adjust cart's Y coordinate
+	add Y_CART - T_MOUTH / 2 - 1  ; Adjust cart's Y coordinate
+ENDC
+IF JUDGE_CART
 	ld c, O_CART * OBJ_SIZE + OAMA_Y
 	ld [bc], a                    ; Set Y
 ENDC
