@@ -48,23 +48,27 @@ Copy1bppLongSafe:
 SECTION "Copy1bppHalfSafe", ROM0
 Copy1bppHalfSafe:
 	ld c, TILE_HEIGHT          ; Set the loop pointer to half tile size
-.copyLoop
+.loop
 	rst WaitVRAM               ; Wait for VRAM to become accessible
 	ld a, [de]                 ; Load a byte from the address DE points to into the A register
 	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
 	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
 	inc e                      ; Increment the source pointer in E
 	dec c                      ; Decrement the inner loop counter in C
-	jr nz, .copyLoop           ; If C is not zero, continue to loop
-	ld c, 8
-.clearLoop
-	rst WaitVRAM
-	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
-	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
-	dec c                      ; Decrement the inner loop counter in C
-	jr nz, .clearLoop          ; If C is not zero, continue to loop
+	jr nz, .loop               ; If C is not zero, continue to loop
+	call FillSafe              ; Clear the odd tile
 	dec b                      ; Decrement the outer loop counter in B
 	jr nz, Copy1bppHalfSafe    ; If B is not zero, continue to loop
+	ret
+
+
+SECTION "FillSafe", ROM0
+FillSafe:
+	rst WaitVRAM               ; Wait for VRAM to become accessible
+	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
+	ld [hli], a                ; Load the byte in the A register to the address HL points to, increment HL
+	bit 4, l                   ; Even tile address reached?
+	jr nz, FillSafe            ; If not, continue to loop
 	ret
 
 
